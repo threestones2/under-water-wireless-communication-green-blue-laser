@@ -1,0 +1,27 @@
+=== 启动 WCI-MC 距离演化仿真 ===
+L = 10 m | Time:  8.58s | Path Loss:  -18.22 dB | RMS Delay: 0.0027 ns
+L = 20 m | Time: 12.73s | Path Loss:  -29.86 dB | RMS Delay: 0.0091 ns
+L = 30 m | Time: 16.98s | Path Loss:  -39.10 dB | RMS Delay: 0.0206 ns
+L = 40 m | Time: 20.45s | Path Loss:  -47.11 dB | RMS Delay: 0.0320 ns
+L = 50 m | Time: 24.13s | Path Loss:  -55.49 dB | RMS Delay: 0.0536 ns
+
+=== 启动 Adaptive HG-PIS 距离演化仿真 ===
+L = 10 m | Time:  0.26s | Path Loss:  -18.19 dB | RMS Delay: 0.0016 ns
+L = 20 m | Time:  0.39s | Path Loss:  -29.86 dB | RMS Delay: 0.0087 ns
+L = 30 m | Time:  0.53s | Path Loss:  -39.00 dB | RMS Delay: 0.0193 ns
+L = 40 m | Time:  0.65s | Path Loss:  -47.13 dB | RMS Delay: 0.0411 ns
+L = 50 m | Time:  0.72s | Path Loss:  -55.65 dB | RMS Delay: 0.0520 ns
+
+=== 启动 MCI-PIS 距离演化仿真 ===
+L = 10 m | Time:  0.52s | Path Loss:  -18.85 dB | RMS Delay: 0.0020 ns
+L = 20 m | Time:  0.74s | Path Loss:  -31.20 dB | RMS Delay: 0.0064 ns
+L = 30 m | Time:  0.84s | Path Loss:  -41.24 dB | RMS Delay: 0.0120 ns
+L = 40 m | Time:  0.90s | Path Loss:  -50.16 dB | RMS Delay: 0.0200 ns
+L = 50 m | Time:  0.91s | Path Loss:  -58.94 dB | RMS Delay: 0.0274 ns
+
+=== 启动 MCS 距离演化仿真 ===
+L = 10 m | Time:  3.06s | Path Loss:  -18.15 dB | RMS Delay: 0.0024 ns
+L = 20 m | Time:  5.92s | Path Loss:  -29.87 dB | RMS Delay: 0.0106 ns
+L = 30 m | Time: 11.09s | Path Loss:  -39.14 dB | RMS Delay: 0.0222 ns
+L = 40 m | Time: 10.81s | Path Loss:  -47.48 dB | RMS Delay: 0.0364 ns
+L = 50 m | Time: 11.66s | Path Loss:  -55.56 dB | RMS Delay: 0.0752 ns

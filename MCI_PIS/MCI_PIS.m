@@ -1,0 +1,235 @@
+ %% 本代码复现论文《Monte-Carlo Integration Models for Multiple  Scattering Based Optical Wireless Communication》
+%  Published in: IEEE Transactions on Communications ( Volume: 68, Issue: 1, January 2020)
+%  DOI: 10.1109/TCOMM.2019.2952135
+%本代码是将所有子函数都放一块的，方便AI dubug
+
+function [P, P_hat, h_hat, h_hat_i] = MSI_PIS_Function(param)
+    % 输入参数:
+    % r: 收发器之间的距离 (m)
+    % theta_T, phi_T: 发射器的天顶角和方位角 (rad)
+    % beta_T: 发射光束发散角 (rad)
+    % theta_R, phi_R: 接收器的天顶角和方位角 (rad)
+    % beta_R: 接收器视场角 (rad)
+    % A_r: 接收器面积 (m^2)
+    % ka: 吸收系数 (1/m)
+    % kr: Rayleigh散射系数 (1/m)
+    % km: Mie散射系数 (1/m)
+    % gamma, g, f: Rayleigh和Mie散射的模型参数
+    % h: HG函数的模型参数（水下通信用）
+    % N: 采样点数
+    % n_max: 最大散射阶数
+    % T_bins: 时间槽边界向量 (s)
+    
+    % 输出参数:
+    % P: 总接收概率
+    % P_hat: 各散射阶的接收概率 (1 x n_max)
+    % h_hat: 总IRF (1 x length(T_bins)-1)
+    % h_hat_i: 各散射阶的IRF (n_max x length(T_bins)-1)
+
+    % 参数设置
+    r = param.r; % 通信距离 (m)
+    theta_T = param.theta_T; 
+    phi_T = param.phi_T; % 发射器角度
+    theta_R = param.theta_R; 
+    phi_R = param.phi_R; % 接收器角度
+    beta_T = param.beta_T; % 发射束发散角
+    beta_R = param.beta_R; % 接收器视场角
+    A_r = param.A_r; % 接收器面积 (m^2)
+    ka = param.ka; % 吸收系数 (1/m)
+    kr = param.kr; % Rayleigh散射系数 (1/m)
+    km = param.km; % Mie散射系数 (1/m)
+    gamma = param.gamma; % Rayleigh散射参数
+    g = param.g; % Mie散射参数
+    f = param.f; % Mie散射参数
+    h = param.h; % HG函数参数（水下用，这里UV通信未使用）
+    N = param.N; % 采样点数
+    n_max = param.n_max; % 最大散射阶数
+    c = param.c; % 光速 (m/s)
+    t_max = param.t_max; % 最大接收时间（5倍传播时间）
+    T_bins = param.T_bins; % 100个时间槽
+    r_R = sqrt(A_r / pi); % 接收器半径 (m)
+    
+    % 计算散射系数和消光系数
+    ks = kr + km;
+    ke = ka + ks;
+ 
+    % 计算方向余弦
+    mu_T = [cos(phi_T)*sin(theta_T); sin(phi_T)*sin(theta_T); cos(theta_T)];
+    mu_R = [cos(phi_R)*sin(theta_R); sin(phi_R)*sin(theta_R); cos(theta_R)];
+    
+    % 初始化
+    P_hat = zeros(1, n_max);
+    h_hat_i = zeros(n_max, length(T_bins));
+    
+    % 主循环：对每个采样点
+    for k = 1:N
+        % 初始化光子位置和方向
+        pos = [0; r; 0]; % 初始位置（接收器在原点，发射器在(0,r,0)）
+        mu = mu_T; % 初始方向
+        d_total = 0; % 总传播距离
+        O_star = 1; % 目标函数值
+        
+        % 对每个散射阶
+        for i = 1:n_max
+            % 采样传播距离（指数分布 - 重要性采样）
+            d_i = -log(1 - rand) / ke;
+            
+            % 采样散射天顶角（均匀分布 - 部分重要性采样）
+            if i == 1
+                theta_i = (beta_T / 2) * rand;
+            else
+                theta_i = pi * rand;
+            end
+            
+            % 采样散射方位角（均匀分布）
+            phi_i = 2 * pi * rand;
+            
+            % 计算目标函数的乘积因子
+            if i == 1
+                O_star_i = pi * sin(theta_i) / (1 - cos(beta_T/2));
+            else
+                % 计算散射天顶角的PDF（Rayleigh+Mie）
+                f_Theta = (kr/ks) * f_Theta_Rayleigh(theta_i, gamma) + (km/ks) * f_Theta_Mie(theta_i, g, f);
+                O_star_i = (ks/ke) * pi * f_Theta;
+            end
+            O_star = O_star * O_star_i;
+            
+            % 更新光子方向
+            mu = update_direction(mu, theta_i, phi_i);
+            
+            % 更新光子位置
+            pos = pos + d_i * mu;
+            d_total = d_total + d_i;
+            
+            % 计算到接收器的距离和角度
+            d_to_rx = norm(pos);
+            cos_phi_r = dot(mu_R, pos) / d_to_rx;
+            
+            % 检查是否在接收器视场内
+            if cos_phi_r >= cos(beta_R/2)
+                % 计算第n次散射的天顶角（相对于接收器方向）
+                theta_n = acos(dot(-mu, pos) / d_to_rx);
+                
+                % 计算散射相函数
+                f_Theta_n = (kr/ks) * f_Theta_Rayleigh(theta_n, gamma) + (km/ks) * f_Theta_Mie(theta_n, g, f);
+                
+                % 修改：使用正确的接收器立体角计算公式
+                Omega_r = A_r / d_to_rx^2 * cos_phi_r;  % 使用准确的接收器立体角计算
+                
+                % 修改：使用正确的检测概率计算公式
+                p_d = ks/ke * exp(-ke * d_to_rx) * f_Theta_n * Omega_r * cos_phi_r;
+                
+                % 计算当前目标函数值（包括检测概率）
+                P_cur = p_d * O_star;
+                
+                % 更新接收概率
+                P_hat(i) = P_hat(i) + P_cur;
+                
+                % 计算接收时间
+                t_total = (d_total + d_to_rx) / c;
+                
+                % 找到对应的时间槽
+                bin_idx = find(t_total >= T_bins(1:end-1) & t_total < T_bins(2:end), 1);
+                if ~isempty(bin_idx)
+                    h_hat_i(i, bin_idx) = h_hat_i(i, bin_idx) + P_cur;
+                end
+            end
+        end
+    end
+    
+    % 归一化
+    P_hat = P_hat / N;
+    P = sum(P_hat);
+    h_hat_i = h_hat_i / N;
+    h_hat = sum(h_hat_i, 1);
+    
+    % 归一化IRF（除以时间间隔和接收面积）
+    delta_T = T_bins(2)-T_bins(1);
+    h_hat = h_hat / (delta_T);
+    for i = 1:n_max
+        h_hat_i(i, :) = h_hat_i(i, :) / (delta_T);
+    end
+end
+
+% 辅助函数，更新方位，和MSC方法逻辑相同
+function mu_new = update_direction(mu, theta, phi)
+    mu_x = mu(1); mu_y = mu(2); mu_z = mu(3);
+    
+    if abs(mu_z) < 1 - 1e-10
+        % 一般情况（非极点）
+        denom = sqrt(1 - mu_z^2);
+        mu_new = [cos(theta)*mu_x + sin(theta)*(mu_x*mu_z*cos(phi) - mu_y*sin(phi))/denom;
+                  cos(theta)*mu_y + sin(theta)*(mu_y*mu_z*cos(phi) + mu_x*sin(phi))/denom;
+                  cos(theta)*mu_z - sin(theta)*cos(phi)*denom];
+    else
+        % 极点情况：区分正负 z 轴
+        if mu_z > 0  % 原方向为 (0,0,1)
+            mu_new = [sin(theta)*cos(phi);
+                      sin(theta)*sin(phi);
+                      cos(theta)];
+        else         % 原方向为 (0,0,-1)
+            % 局部 x 轴取全局 -x 方向（或 y 方向，需保持右手定则）
+            % 此处选择：局部 x 轴 = [-1, 0, 0], 局部 y 轴 = [0, -1, 0]
+            mu_new = [-sin(theta)*cos(phi);  % x 分量取负
+                      -sin(theta)*sin(phi);  % y 分量取负
+                      -cos(theta)];          % z 分量 = -cos(theta)
+        end
+    end
+end
+
+
+% 辅助函数：Rayleigh散射的PDF
+function f = f_Theta_Rayleigh(theta, gamma)
+    f = 3 * (1 + 3*gamma + (1-gamma)*cos(theta)^2) * sin(theta) / (8 * (1 + 2*gamma));
+end
+
+% 辅助函数：Mie散射的PDF
+function f = f_Theta_Mie(theta, g, f)
+    f = (1 - g^2)/2 * (1/(1 + g^2 - 2*g*cos(theta))^(3/2) + f * 0.5 * (3*cos(theta)^2 - 1) / (1 + g^2)^(3/2)) * sin(theta);
+end
+
+
+% 参数设置（根据论文中的Table I）
+param=struct();
+param.r = 100; % 通信距离 (m)
+param.theta_T = deg2rad(45); % 发射器天顶角
+param.phi_T = 2*pi-deg2rad(90); % 发射器方位角
+param.theta_R = deg2rad(45);  % 接收器天顶角
+param.phi_R = deg2rad(90); % 接收器方位角
+param.beta_T = deg2rad(17); % 发射束发散角
+param.beta_R = deg2rad(30); % 接收器视场角
+param.A_r = 1.77*1e-4; % 接收器面积 (m^2)
+param.ka = 0.802e-3; % 吸收系数 (1/m)
+param.kr = 0.266e-3; % Rayleigh散射系数 (1/m)
+param.km = 0.284e-3; % Mie散射系数 (1/m)
+param.gamma = 0.017; % Rayleigh散射参数
+param.g = 0.72; % Mie散射参数
+param.f = 0.5; % Mie散射参数
+param.h = 0.9; % HG函数参数（水下用，这里UV通信未使用）
+param.N = 1e6; % 采样点数
+param.n_max = 3; % 最大散射阶数
+
+% 设置时间槽（根据接收时间范围调整）
+param.c = 2.997046e8;
+param.t_max = 2e-6; % 最大模拟时间 (s) (1 us)
+param.dt = 1e-8; % 时间分辨率 (s) (1 ns)
+param.T_bins = 0:param.dt:param.t_max;
+
+% 运行MSI_PIS模型
+[P, P_hat, h_hat, h_hat_i] = MSI_PIS_Function(param);
+
+% 计算路径损耗 (dB)
+PL = 10 * log10(1 / P);
+PL1= 10*log10( 1 / trapz(param.T_bins, h_hat_i(1,:)) );
+% 显示结果
+fprintf('总路径损失: %.2f dB\n',PL);
+fprintf('1阶散射路径损失: %.2f dB\n',PL1);
+% 绘制IRF
+figure;
+plot(param.T_bins(1:end), h_hat_i,param.T_bins(1:end),h_hat);
+xlabel('Time (s)');
+ylabel('Impulse Response (W/m^2)');
+title('Channel Impulse Response (IRF)');
+legend('1st order', '2nd order', '3rd order','total');
+grid on;
+

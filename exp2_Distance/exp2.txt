@@ -1,0 +1,47 @@
+--- 运行 Exp2: WCI-MC (强湍流独立版) ---10°、0.05m、40°
+
+>>> 开始仿真 [Strong] 湍流环境 <<<
+    Clear Ocean | L= 5m | Time:  2.56s | Path Loss:  25.01 dB
+    Clear Ocean | L=15m | Time:  3.59s | Path Loss:  39.94 dB
+    Clear Ocean | L=25m | Time:  9.90s | Path Loss:  49.70 dB
+    Clear Ocean | L=35m | Time:  9.80s | Path Loss:  58.43 dB
+    Clear Ocean | L=45m | Time: 11.45s | Path Loss:  66.42 dB
+    Clear Ocean | L=55m | Time: 12.63s | Path Loss:  72.98 dB
+    Clear Ocean | L=65m | Time: 13.23s | Path Loss:  81.11 dB
+    Clear Ocean | L=75m | Time: 14.53s | Path Loss:  88.20 dB
+    Clear Ocean | L=85m | Time: 15.20s | Path Loss:  94.44 dB
+    Coastal Ocean | L= 5m | Time: 10.01s | Path Loss:  27.30 dB
+    Coastal Ocean | L=15m | Time: 15.93s | Path Loss:  47.53 dB
+    Coastal Ocean | L=25m | Time: 17.77s | Path Loss:  61.53 dB
+    Coastal Ocean | L=35m | Time: 26.45s | Path Loss:  75.80 dB
+    Coastal Ocean | L=45m | Time: 32.86s | Path Loss:  87.11 dB
+    Coastal Ocean | L=55m | Time: 35.71s | Path Loss: 102.11 dB
+    Turbid Harbor | L= 5m | Time: 24.46s | Path Loss:  40.63 dB
+    Turbid Harbor | L=10m | Time: 48.54s | Path Loss:  64.43 dB
+    Turbid Harbor | L=15m | Time: 39.46s | Path Loss:  87.50 dB
+    Turbid Harbor | L=20m | Time: 20.58s | Path Loss: 109.46 dB
+已成功保存强湍流数据至 data_exp2_WCIMC_Strong.mat
+>> 
+
+
+--- 运行 Exp2: MCS (传统 LUT + O(1)极速标量版 + FOV空间截断) ---
+  Clear Ocean | L= 5m | Time:  0.08s | Path Loss:  25.06 dB
+  Clear Ocean | L=15m | Time:  0.07s | Path Loss:  39.75 dB
+  Clear Ocean | L=25m | Time:  0.08s | Path Loss:  50.93 dB
+  Clear Ocean | L=35m | Time:  0.09s | Path Loss:  58.35 dB
+  Clear Ocean | L=45m | Time:  0.11s | Path Loss:  66.28 dB
+  Clear Ocean | L=55m | Time:  0.13s | Path Loss:  74.11 dB
+  Clear Ocean | L=65m | Time:  0.13s | Path Loss:  82.39 dB
+  Clear Ocean | L=75m | Time:  0.14s | Path Loss:  87.68 dB
+  Clear Ocean | L=85m | Time:  0.15s | Path Loss:  93.11 dB
+  Coastal Ocean | L= 5m | Time:  0.09s | Path Loss:  27.37 dB
+  Coastal Ocean | L=15m | Time:  0.15s | Path Loss:  47.86 dB
+  Coastal Ocean | L=25m | Time:  0.23s | Path Loss:  61.87 dB
+  Coastal Ocean | L=35m | Time:  0.33s | Path Loss:  75.81 dB
+  Coastal Ocean | L=45m | Time:  0.36s | Path Loss:  87.72 dB
+  Coastal Ocean | L=55m | Time:  0.42s | Path Loss:  99.57 dB
+  Turbid Harbor | L= 5m | Time:  0.38s | Path Loss:  40.47 dB
+  Turbid Harbor | L=10m | Time:  0.61s | Path Loss:  60.69 dB
+  Turbid Harbor | L=15m | Time:  0.89s | Path Loss:  81.94 dB
+  Turbid Harbor | L=20m | Time:  1.10s | Path Loss:  97.81 dB
+>> 

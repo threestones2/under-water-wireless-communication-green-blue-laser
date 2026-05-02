@@ -1,0 +1,172 @@
+--- 运行 Exp8_1: WCI-MC FOV分析 (Strong Turbulence) ---
+>>> 水质: Clear Ocean | 接收 FOV: 5.0 deg <<<
+    L=10m | Time:  2.20s | Path Loss:  10.44 dB
+    L=20m | Time:  2.35s | Path Loss:  22.75 dB
+    L=30m | Time:  2.59s | Path Loss:  33.21 dB
+    L=40m | Time:  2.82s | Path Loss:  42.69 dB
+    L=50m | Time:  6.52s | Path Loss:  51.50 dB
+    L=60m | Time: 11.43s | Path Loss:  59.97 dB
+>>> 水质: Clear Ocean | 接收 FOV: 10.0 deg <<<
+    L=10m | Time:  2.48s | Path Loss:  10.44 dB
+    L=20m | Time:  2.98s | Path Loss:  22.74 dB
+    L=30m | Time:  2.89s | Path Loss:  33.20 dB
+    L=40m | Time:  3.67s | Path Loss:  42.67 dB
+    L=50m | Time:  4.17s | Path Loss:  51.49 dB
+    L=60m | Time:  4.65s | Path Loss:  59.95 dB
+>>> 水质: Clear Ocean | 接收 FOV: 40.0 deg <<<
+    L=10m | Time:  2.96s | Path Loss:  10.43 dB
+    L=20m | Time:  3.09s | Path Loss:  22.74 dB
+    L=30m | Time:  3.46s | Path Loss:  33.19 dB
+    L=40m | Time:  3.27s | Path Loss:  42.66 dB
+    L=50m | Time:  5.83s | Path Loss:  51.47 dB
+    L=60m | Time: 11.77s | Path Loss:  59.93 dB
+>>> 水质: Clear Ocean | 接收 FOV: 90.0 deg <<<
+    L=10m | Time:  7.32s | Path Loss:  10.43 dB
+    L=20m | Time:  8.21s | Path Loss:  22.74 dB
+    L=30m | Time:  8.97s | Path Loss:  33.19 dB
+    L=40m | Time: 10.52s | Path Loss:  42.66 dB
+    L=50m | Time: 10.08s | Path Loss:  51.46 dB
+    L=60m | Time: 11.12s | Path Loss:  59.93 dB
+>>> 水质: Coastal Ocean | 接收 FOV: 5.0 deg <<<
+    L=10m | Time: 10.93s | Path Loss:  20.45 dB
+    L=20m | Time: 14.88s | Path Loss:  42.70 dB
+    L=30m | Time: 18.76s | Path Loss:  62.73 dB
+    L=40m | Time: 14.77s | Path Loss:  81.86 dB
+    L=50m | Time:  7.72s | Path Loss:  99.27 dB
+    L=60m | Time: 26.78s | Path Loss: 114.79 dB
+>>> 水质: Coastal Ocean | 接收 FOV: 10.0 deg <<<
+    L=10m | Time: 11.76s | Path Loss:  20.44 dB
+    L=20m | Time: 14.61s | Path Loss:  42.67 dB
+    L=30m | Time: 19.07s | Path Loss:  62.66 dB
+    L=40m | Time: 22.89s | Path Loss:  81.53 dB
+    L=50m | Time: 13.97s | Path Loss:  98.85 dB
+    L=60m | Time:  8.00s | Path Loss: 114.35 dB
+>>> 水质: Coastal Ocean | 接收 FOV: 40.0 deg <<<
+    L=10m | Time:  3.21s | Path Loss:  20.43 dB
+    L=20m | Time:  4.46s | Path Loss:  42.65 dB
+    L=30m | Time:  5.74s | Path Loss:  62.61 dB
+    L=40m | Time:  7.18s | Path Loss:  81.41 dB
+    L=50m | Time:  8.29s | Path Loss:  98.40 dB
+    L=60m | Time:  8.33s | Path Loss: 113.24 dB
+>>> 水质: Coastal Ocean | 接收 FOV: 90.0 deg <<<
+    L=10m | Time:  3.18s | Path Loss:  20.43 dB
+    L=20m | Time:  4.58s | Path Loss:  42.65 dB
+    L=30m | Time:  5.87s | Path Loss:  62.61 dB
+    L=40m | Time:  7.18s | Path Loss:  81.39 dB
+    L=50m | Time:  8.46s | Path Loss:  98.33 dB
+    L=60m | Time:  8.47s | Path Loss: 113.16 dB
+>>> 水质: Turbid Harbor | 接收 FOV: 5.0 deg <<<
+    L= 5m | Time:  6.63s | Path Loss:  41.30 dB
+    L=10m | Time: 10.67s | Path Loss:  76.66 dB
+    L=15m | Time:  6.58s | Path Loss:  91.58 dB
+    L=20m | Time:  6.40s | Path Loss: 142.69 dB
+>>> 水质: Turbid Harbor | 接收 FOV: 10.0 deg <<<
+    L= 5m | Time:  6.77s | Path Loss:  41.01 dB
+    L=10m | Time: 11.26s | Path Loss:  75.95 dB
+    L=15m | Time:  7.03s | Path Loss:  91.52 dB
+    L=20m | Time:  6.40s | Path Loss: 128.79 dB
+>>> 水质: Turbid Harbor | 接收 FOV: 40.0 deg <<<
+    L= 5m | Time:  7.07s | Path Loss:  40.20 dB
+    L=10m | Time: 12.13s | Path Loss:  74.42 dB
+    L=15m | Time:  7.76s | Path Loss:  91.14 dB
+    L=20m | Time:  6.64s | Path Loss: 124.42 dB
+>>> 水质: Turbid Harbor | 接收 FOV: 90.0 deg <<<
+    L= 5m | Time:  7.23s | Path Loss:  40.10 dB
+    L=10m | Time: 12.42s | Path Loss:  73.99 dB
+    L=15m | Time:  7.93s | Path Loss:  91.01 dB
+    L=20m | Time:  6.71s | Path Loss: 122.99 dB
+>> 
+
+
+
+--- 运行 Exp8_2: MCS FOV分析 (O(1) LUT 极速标量版) ---
+
+[MCS] | Clear Ocean | 接收 FOV: 5.0 deg
+    L=10m | Time:  0.10s | Path Loss:   9.86 dB
+    L=20m | Time:  0.09s | Path Loss:  21.32 dB
+    L=30m | Time:  0.12s | Path Loss:  31.07 dB
+    L=40m | Time:  0.15s | Path Loss:  40.13 dB
+    L=50m | Time:  0.16s | Path Loss:  48.60 dB
+    L=60m | Time:  0.17s | Path Loss:  56.64 dB
+
+[MCS] | Clear Ocean | 接收 FOV: 10.0 deg
+    L=10m | Time:  0.07s | Path Loss:   9.85 dB
+    L=20m | Time:  0.09s | Path Loss:  21.31 dB
+    L=30m | Time:  0.12s | Path Loss:  31.06 dB
+    L=40m | Time:  0.14s | Path Loss:  40.12 dB
+    L=50m | Time:  0.16s | Path Loss:  48.59 dB
+    L=60m | Time:  0.19s | Path Loss:  56.63 dB
+
+[MCS] | Clear Ocean | 接收 FOV: 40.0 deg
+    L=10m | Time:  0.08s | Path Loss:   9.85 dB
+    L=20m | Time:  0.10s | Path Loss:  21.31 dB
+    L=30m | Time:  0.13s | Path Loss:  31.06 dB
+    L=40m | Time:  0.15s | Path Loss:  40.12 dB
+    L=50m | Time:  0.17s | Path Loss:  48.58 dB
+    L=60m | Time:  0.20s | Path Loss:  56.62 dB
+
+[MCS] | Clear Ocean | 接收 FOV: 90.0 deg
+    L=10m | Time:  0.07s | Path Loss:   9.85 dB
+    L=20m | Time:  0.09s | Path Loss:  21.31 dB
+    L=30m | Time:  0.13s | Path Loss:  31.06 dB
+    L=40m | Time:  0.16s | Path Loss:  40.12 dB
+    L=50m | Time:  0.18s | Path Loss:  48.58 dB
+    L=60m | Time:  0.22s | Path Loss:  56.62 dB
+
+[MCS] | Coastal Ocean | 接收 FOV: 5.0 deg
+    L=10m | Time:  0.18s | Path Loss:  19.97 dB
+    L=20m | Time:  0.30s | Path Loss:  41.73 dB
+    L=30m | Time:  0.43s | Path Loss:  61.43 dB
+    L=40m | Time:  0.56s | Path Loss:  80.68 dB
+    L=50m | Time:  0.67s | Path Loss:  99.24 dB
+    L=60m | Time:  0.76s | Path Loss: 114.98 dB
+
+[MCS] | Coastal Ocean | 接收 FOV: 10.0 deg
+    L=10m | Time:  0.19s | Path Loss:  19.95 dB
+    L=20m | Time:  0.34s | Path Loss:  41.71 dB
+    L=30m | Time:  0.47s | Path Loss:  61.36 dB
+    L=40m | Time:  0.61s | Path Loss:  80.54 dB
+    L=50m | Time:  0.71s | Path Loss:  98.88 dB
+    L=60m | Time:  0.80s | Path Loss: 114.33 dB
+
+[MCS] | Coastal Ocean | 接收 FOV: 40.0 deg
+    L=10m | Time:  0.20s | Path Loss:  19.94 dB
+    L=20m | Time:  0.35s | Path Loss:  41.69 dB
+    L=30m | Time:  0.50s | Path Loss:  61.31 dB
+    L=40m | Time:  0.64s | Path Loss:  80.44 dB
+    L=50m | Time:  0.81s | Path Loss:  98.42 dB
+    L=60m | Time:  0.94s | Path Loss: 113.25 dB
+
+[MCS] | Coastal Ocean | 接收 FOV: 90.0 deg
+    L=10m | Time:  0.22s | Path Loss:  19.94 dB
+    L=20m | Time:  0.40s | Path Loss:  41.69 dB
+    L=30m | Time:  0.58s | Path Loss:  61.31 dB
+    L=40m | Time:  0.78s | Path Loss:  80.42 dB
+    L=50m | Time:  0.95s | Path Loss:  98.33 dB
+    L=60m | Time:  1.12s | Path Loss: 113.05 dB
+
+[MCS] | Turbid Harbor | 接收 FOV: 5.0 deg
+    L= 5m | Time:  0.71s | Path Loss:  41.64 dB
+    L=10m | Time:  1.42s | Path Loss:  80.34 dB
+    L=15m | Time:  2.13s | Path Loss: 103.44 dB
+    L=20m | Time:  2.76s | Path Loss: 124.62 dB
+
+[MCS] | Turbid Harbor | 接收 FOV: 10.0 deg
+    L= 5m | Time:  0.75s | Path Loss:  41.44 dB
+    L=10m | Time:  1.49s | Path Loss:  78.16 dB
+    L=15m | Time:  2.24s | Path Loss:  98.39 dB
+    L=20m | Time:  2.87s | Path Loss: 110.86 dB
+
+[MCS] | Turbid Harbor | 接收 FOV: 40.0 deg
+    L= 5m | Time:  0.85s | Path Loss:  41.20 dB
+    L=10m | Time:  1.74s | Path Loss:  73.54 dB
+    L=15m | Time:  2.63s | Path Loss:  90.89 dB
+    L=20m | Time:  3.42s | Path Loss: 106.45 dB
+
+[MCS] | Turbid Harbor | 接收 FOV: 90.0 deg
+    L= 5m | Time:  1.01s | Path Loss:  41.17 dB
+    L=10m | Time:  2.15s | Path Loss:  72.81 dB
+    L=15m | Time:  3.27s | Path Loss:  89.57 dB
+    L=20m | Time:  4.33s | Path Loss: 105.23 dB
+Exp8_2 MCS FOV 数据已保存！
+>> 

@@ -1,0 +1,27 @@
+--- 运行 Adaptive HG-PIS 收敛性测试 (零分配标量加速) ---
+N = 10^3 | Time: 0.01 s | Path Loss: 31.48 dB
+N = 10^4 | Time: 0.03 s | Path Loss: 31.83 dB
+N = 10^5 | Time: 0.28 s | Path Loss: 31.87 dB
+N = 10^6 | Time: 2.61 s | Path Loss: 31.84 dB
+N = 10^7 | Time: 26.57 s | Path Loss: 31.84 dB
+
+--- 运行 MCI-PIS 收敛性测试 (零分配标量加速) ---
+N = 10^3 | Time: 0.02 s | Path Loss: 32.93 dB
+N = 10^4 | Time: 0.04 s | Path Loss: 32.22 dB
+N = 10^5 | Time: 0.30 s | Path Loss: 32.33 dB
+N = 10^6 | Time: 2.96 s | Path Loss: 32.30 dB
+N = 10^7 | Time: 29.95 s | Path Loss: 32.30 dB
+
+--- 运行 MCS 收敛性测试 (O(1) 哈希 + 零分配标量加速) ---
+N = 10^3 | Time: 0.01 s | Path Loss: 31.57 dB
+N = 10^4 | Time: 0.02 s | Path Loss: 31.83 dB
+N = 10^5 | Time: 0.19 s | Path Loss: 31.85 dB
+N = 10^6 | Time: 1.84 s | Path Loss: 31.84 dB
+N = 10^7 | Time: 18.22 s | Path Loss: 31.83 dB
+
+--- 运行 Analog MCS 收敛性测试 (纯物理接收 + 零分配标量加速) ---
+N = 10^3 | Time: 0.01 s | Path Loss: 32.12 dB
+N = 10^4 | Time: 0.02 s | Path Loss: 32.60 dB
+N = 10^5 | Time: 0.16 s | Path Loss: 32.36 dB
+N = 10^6 | Time: 1.51 s | Path Loss: 32.36 dB
+N = 10^7 | Time: 17.95 s | Path Loss: 32.41 dB

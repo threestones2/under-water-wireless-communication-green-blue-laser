@@ -1,0 +1,42 @@
+
+>>> 湍流环境: Strong <<<
+--- 孔径: 0.01 m ---
+    L= 5m | Time:  2.21s | Path Loss:   3.86 dB
+    L=10m | Time:  2.12s | Path Loss:  10.46 dB
+    L=15m | Time:  2.20s | Path Loss:  16.88 dB
+    L=20m | Time:  2.30s | Path Loss:  22.75 dB
+    L=25m | Time:  2.46s | Path Loss:  28.14 dB
+    L=30m | Time:  2.51s | Path Loss:  33.20 dB
+    L=35m | Time:  2.63s | Path Loss:  38.05 dB
+    L=40m | Time:  2.73s | Path Loss:  42.68 dB
+    L=45m | Time:  2.86s | Path Loss:  47.16 dB
+    L=50m | Time:  2.92s | Path Loss:  51.48 dB
+    L=55m | Time:  3.05s | Path Loss:  55.76 dB
+    L=60m | Time:  3.15s | Path Loss:  59.94 dB
+--- 孔径: 0.05 m ---
+    L= 5m | Time:  2.05s | Path Loss:   2.85 dB
+    L=10m | Time:  2.14s | Path Loss:   6.17 dB
+    L=15m | Time:  2.24s | Path Loss:   9.55 dB
+    L=20m | Time:  2.33s | Path Loss:  13.14 dB
+    L=25m | Time:  2.45s | Path Loss:  17.10 dB
+    L=30m | Time:  2.53s | Path Loss:  21.29 dB
+    L=35m | Time:  2.65s | Path Loss:  25.57 dB
+    L=40m | Time:  2.72s | Path Loss:  29.84 dB
+    L=45m | Time:  2.85s | Path Loss:  34.07 dB
+    L=50m | Time:  2.94s | Path Loss:  38.28 dB
+    L=55m | Time:  3.05s | Path Loss:  42.45 dB
+    L=60m | Time:  3.12s | Path Loss:  46.50 dB
+--- 孔径: 0.10 m ---
+    L= 5m | Time:  1.87s | Path Loss:   2.58 dB
+    L=10m | Time:  2.11s | Path Loss:   5.70 dB
+    L=15m | Time:  2.25s | Path Loss:   9.02 dB
+    L=20m | Time:  2.33s | Path Loss:  12.37 dB
+    L=25m | Time:  2.45s | Path Loss:  15.72 dB
+    L=30m | Time:  2.55s | Path Loss:  19.12 dB
+    L=35m | Time:  2.67s | Path Loss:  22.63 dB
+    L=40m | Time:  2.80s | Path Loss:  26.26 dB
+    L=45m | Time:  2.91s | Path Loss:  29.99 dB
+    L=50m | Time:  2.95s | Path Loss:  33.80 dB
+    L=55m | Time:  3.04s | Path Loss:  37.68 dB
+    L=60m | Time:  3.12s | Path Loss:  41.49 dB
+>> 

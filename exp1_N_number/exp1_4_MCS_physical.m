@@ -1,0 +1,142 @@
+%% Exp1: Analog MCS (Pure Physical Reception, Zero-Allocation Scalarized)
+% 机制声明: 纯物理蒙特卡洛，不使用强制接收(Local Estimation)，仅在几何上真实击中探测器才记录能量
+clc; clear; close all;
+
+N_arr = [1e3, 1e4, 1e5, 1e6, 1e7]; 
+num_N = length(N_arr);
+lambda = 514e-9; 
+w0 = 0.002; 
+div_angle = 0.1 * pi / 180; 
+theta_half_div_physics = div_angle / 2;
+Rx_Aperture = 0.05; 
+Rx_FOV = 5 * pi / 180; 
+L = 20;
+
+param.coef_a = 0.179; 
+param.coef_b = 0.219; 
+param.coef_c = 0.398; 
+param.albedo = param.coef_b / param.coef_c;
+param = calc_haltrin_params(param);
+
+Tx_Pos = [0, 0, 0]; Rx_Pos = [0, L, 0]; Link_Dir = [0, 1, 0]; Rx_Normal = [0, -1, 0];
+if abs(Link_Dir(3)) < 0.9, up_temp = [0, 0, 1]; else, up_temp = [1, 0, 0]; end
+u_vec_Tx = cross(up_temp, Link_Dir); u_vec_Tx = u_vec_Tx / norm(u_vec_Tx); 
+v_vec_Tx = cross(Link_Dir, u_vec_Tx); v_vec_Tx = v_vec_Tx / norm(v_vec_Tx);
+
+% 预计算判定常数
+cos_FOV_half = cos(Rx_FOV / 2);
+Rx_Aperture_half_sq = (Rx_Aperture / 2)^2;
+
+Lx = Link_Dir(1); Ly = Link_Dir(2); Lz = Link_Dir(3);
+Nx = Rx_Normal(1); Ny = Rx_Normal(2); Nz = Rx_Normal(3);
+Tx = Tx_Pos(1); Ty = Tx_Pos(2); Tz = Tx_Pos(3);
+Rx = Rx_Pos(1); Ry = Rx_Pos(2); Rz = Rx_Pos(3);
+Ux = u_vec_Tx(1); Uy = u_vec_Tx(2); Uz = u_vec_Tx(3);
+Vx = v_vec_Tx(1); Vy = v_vec_Tx(2); Vz = v_vec_Tx(3);
+
+% 构建 O(1) 复杂度的等概率反函数哈希查找表
+th_axis = linspace(0, pi, 50000); pdf_vals = zeros(size(th_axis));
+for i = 1:length(th_axis), pdf_vals(i) = pdf_Empirical(cos(th_axis(i)), param) * 2 * pi * sin(th_axis(i)); end
+cdf_vals = cumtrapz(th_axis, pdf_vals); cdf_vals = cdf_vals / cdf_vals(end);
+[cdf_uniq, idx_uniq] = unique(cdf_vals);
+LUT_SIZE = 100000;
+P_grid = linspace(0, 1, LUT_SIZE);
+th_LUT = interp1(cdf_uniq, th_axis(idx_uniq), P_grid, 'linear', 'extrap');
+cos_th_LUT = cos(th_LUT); sin_th_LUT = sin(th_LUT);
+
+PL_arr = zeros(1, num_N); Time_arr = zeros(1, num_N);
+
+fprintf('--- 运行 Analog MCS 收敛性测试 (纯物理接收 + 零分配标量加速) ---\n');
+for idx = 1:num_N
+    N_packets = N_arr(idx); P_rx_accum = 0; tic;
+    rng(123456, 'twister'); 
+    
+    for p = 1:N_packets
+        r0 = w0 * sqrt(-0.5*log(rand())); phi0 = 2*pi*rand();
+        cp0 = cos(phi0); sp0 = sin(phi0);
+        
+        p1 = Tx + r0*cp0*Ux + r0*sp0*Vx;
+        p2 = Ty + r0*cp0*Uy + r0*sp0*Vy;
+        p3 = Tz + r0*cp0*Uz + r0*sp0*Vz;
+        
+        U_init = theta_half_div_physics * sqrt(-0.5 * log(rand()));
+        dir = rotate_direction_fast(Link_Dir, cos(U_init), sin(U_init), 2*pi*rand());
+        d1 = dir(1); d2 = dir(2); d3 = dir(3);
+        
+        weight = 1.0; 
+        z_progression = (p1 - Tx)*Lx + (p2 - Ty)*Ly + (p3 - Tz)*Lz;
+        
+        for ord = 1:200
+            d_step = -log(rand()) / param.coef_b; 
+            
+            % 物理碰撞检测: 检查本步是否越过接收面 Z = L
+            cos_th = d1*Lx + d2*Ly + d3*Lz; 
+            if cos_th > 0
+                dist_to_plane = (L - z_progression) / cos_th;
+                if d_step >= dist_to_plane
+                    % 光子越过接收面，计算交点坐标
+                    hit_p1 = p1 + d1 * dist_to_plane;
+                    hit_p2 = p2 + d2 * dist_to_plane;
+                    hit_p3 = p3 + d3 * dist_to_plane;
+                    final_weight = weight * exp(-param.coef_a * dist_to_plane);
+                    
+                    % 纯物理接收校验: 孔径与视场角
+                    cos_rx_tilt = abs(d1*Nx + d2*Ny + d3*Nz);
+                    if cos_rx_tilt >= cos_FOV_half
+                        r_hit_sq = (hit_p1 - Rx)^2 + (hit_p2 - Ry)^2 + (hit_p3 - Rz)^2;
+                        if r_hit_sq <= Rx_Aperture_half_sq
+                            P_rx_accum = P_rx_accum + final_weight;
+                        end
+                    end
+                    break; % 无论是否被接收，穿过接收面即终止
+                end
+            end
+            
+            % 未穿透接收面，执行正常物理游走
+            p1 = p1 + d1 * d_step; p2 = p2 + d2 * d_step; p3 = p3 + d3 * d_step; 
+            weight = weight * exp(-param.coef_a * d_step);
+            z_progression = (p1 - Tx)*Lx + (p2 - Ty)*Ly + (p3 - Tz)*Lz;
+            
+            if z_progression < -10, break; end % 防止深度背向散射
+            
+            if weight < 1e-9
+                if rand() > 0.1, break; else, weight = weight * 10; end
+            end
+            
+            % O(1) 极速哈希表抽样
+            u_rand = rand();
+            idx_lut = floor(u_rand * (LUT_SIZE - 1)) + 1;
+            ct_s = cos_th_LUT(idx_lut); st_s = sin_th_LUT(idx_lut);
+            
+            dir = rotate_direction_fast([d1, d2, d3], ct_s, st_s, 2*pi*rand());
+            d1 = dir(1); d2 = dir(2); d3 = dir(3);
+        end
+    end
+    Time_arr(idx) = toc; PL_arr(idx) = 10 * log10(max(P_rx_accum / N_packets, 1e-300));
+    fprintf('N = 10^%d | Time: %.2f s | Path Loss: %.2f dB\n', log10(N_packets), Time_arr(idx), -PL_arr(idx));
+end
+save('data_exp1_AnalogMCS.mat', 'N_arr', 'PL_arr', 'Time_arr');
+
+% ================= 辅助函数 =================
+function param = calc_haltrin_params(p)
+    b_e = p.coef_b; al_e = p.albedo; p.q_e = 2.598 + 17.748*sqrt(b_e) - 16.722*b_e + 5.932*b_e*sqrt(b_e);
+    p.k1 = 1.188 - 0.688*al_e; p.k2 = 0.1*(3.07 - 1.90*al_e); p.k3 = 0.01*(4.58 - 3.02*al_e); p.k4 = 0.001*(3.24 - 2.25*al_e); p.k5 = 0.0001*(0.84 - 0.61*al_e);
+    th = linspace(0, pi, 2000); val = zeros(size(th));
+    for i=1:2000
+        t = max(th(i)*180/pi, 1e-6); sq_t = sqrt(t); t_sq = t*t;
+        term = 1 - p.k1*sq_t + p.k2*t - p.k3*t*sq_t + p.k4*t_sq - p.k5*t_sq*sq_t;
+        val(i) = exp(p.q_e * term); 
+    end
+    p.b_emp_norm = 2*pi*trapz(th, val.*sin(th)); param = p;
+end
+function p = pdf_Empirical(cos_theta, param)
+    t_deg = max(acos(cos_theta) * 180 / pi, 1e-6); sq_t = sqrt(t_deg); t_sq = t_deg * t_deg;
+    term = 1 - param.k1*sq_t + param.k2*t_deg - param.k3*t_deg*sq_t + param.k4*t_sq - param.k5*t_sq*sq_t;
+    p = exp(param.q_e * term) / param.b_emp_norm;
+end
+function nd = rotate_direction_fast(d, ct, st, psi_s)
+    denom = sqrt(1 - d(3)^2); sp = sin(psi_s); cp = cos(psi_s);
+    if denom < 1e-10, nd = [st*cp, st*sp, sign(d(3))*ct]; else
+        nd = [st/denom*(d(1)*d(3)*cp - d(2)*sp) + d(1)*ct, st/denom*(d(2)*d(3)*cp + d(1)*sp) + d(2)*ct, -st*cp*denom + d(3)*ct]; 
+    end
+end

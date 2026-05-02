@@ -1,0 +1,131 @@
+--- 运行 Exp7: WCI-MC (Strong Turbulence_v1) ---
+>>> 水质: Clear Ocean | 偏轴角度: 0.0 deg <<<
+    L=10m | Time:  2.06s | Path Loss:  10.43 dB
+    L=20m | Time:  2.27s | Path Loss:  22.74 dB
+    L=30m | Time:  2.56s | Path Loss:  33.19 dB
+    L=40m | Time:  2.74s | Path Loss:  42.66 dB
+    L=50m | Time:  2.99s | Path Loss:  51.46 dB
+    L=60m | Time:  3.28s | Path Loss:  59.93 dB
+>>> 水质: Clear Ocean | 偏轴角度: 0.3 deg <<<
+    L=10m | Time:  2.07s | Path Loss:  42.93 dB
+    L=20m | Time:  2.31s | Path Loss:  52.27 dB
+    L=30m | Time:  2.55s | Path Loss:  60.25 dB
+    L=40m | Time:  2.81s | Path Loss:  67.75 dB
+    L=50m | Time:  3.17s | Path Loss:  75.05 dB
+    L=60m | Time:  3.32s | Path Loss:  82.03 dB
+>>> 水质: Clear Ocean | 偏轴角度: 1.0 deg <<<
+    L=10m | Time:  1.98s | Path Loss:  51.73 dB
+    L=20m | Time:  2.25s | Path Loss:  60.83 dB
+    L=30m | Time:  2.54s | Path Loss:  68.56 dB
+    L=40m | Time:  2.76s | Path Loss:  75.94 dB
+    L=50m | Time: 10.15s | Path Loss:  82.74 dB
+    L=60m | Time: 10.86s | Path Loss:  89.53 dB
+>>> 水质: Coastal Ocean | 偏轴角度: 0.0 deg <<<
+    L=10m | Time: 10.15s | Path Loss:  20.43 dB
+    L=20m | Time: 15.57s | Path Loss:  42.65 dB
+    L=30m | Time: 18.56s | Path Loss:  62.61 dB
+    L=40m | Time: 22.70s | Path Loss:  81.39 dB
+    L=50m | Time: 16.95s | Path Loss:  98.33 dB
+    L=60m | Time:  9.25s | Path Loss: 113.16 dB
+>>> 水质: Coastal Ocean | 偏轴角度: 0.3 deg <<<
+    L=10m | Time:  3.16s | Path Loss:  41.78 dB
+    L=20m | Time:  4.45s | Path Loss:  58.53 dB
+    L=30m | Time: 14.32s | Path Loss:  74.23 dB
+    L=40m | Time: 23.17s | Path Loss:  89.72 dB
+    L=50m | Time: 27.31s | Path Loss: 103.07 dB
+    L=60m | Time: 27.37s | Path Loss: 112.80 dB
+>>> 水质: Coastal Ocean | 偏轴角度: 1.0 deg <<<
+    L=10m | Time: 10.13s | Path Loss:  49.86 dB
+    L=20m | Time: 14.86s | Path Loss:  64.93 dB
+    L=30m | Time: 18.98s | Path Loss:  78.66 dB
+    L=40m | Time: 23.01s | Path Loss:  88.77 dB
+    L=50m | Time: 28.56s | Path Loss: 104.31 dB
+    L=60m | Time:  8.56s | Path Loss: 118.01 dB
+>>> 水质: Turbid Harbor | 偏轴角度: 0.0 deg <<<
+    L= 5m | Time: 16.79s | Path Loss:  40.10 dB
+    L=10m | Time: 36.82s | Path Loss:  73.99 dB
+    L=15m | Time: 24.68s | Path Loss:  91.01 dB
+    L=20m | Time: 20.24s | Path Loss: 122.99 dB
+>>> 水质: Turbid Harbor | 偏轴角度: 0.3 deg <<<
+    L= 5m | Time: 29.65s | Path Loss:  45.47 dB
+    L=10m | Time: 38.31s | Path Loss:  74.47 dB
+    L=15m | Time: 19.34s | Path Loss:  98.60 dB
+    L=20m | Time: 20.02s | Path Loss: 118.70 dB
+>>> 水质: Turbid Harbor | 偏轴角度: 1.0 deg <<<
+    L= 5m | Time: 22.48s | Path Loss:  48.15 dB
+    L=10m | Time: 37.55s | Path Loss:  62.92 dB
+    L=15m | Time: 23.21s | Path Loss:  98.00 dB
+    L=20m | Time: 18.45s | Path Loss: 119.70 dB
+>> 
+
+
+
+--- 运行 Exp7: MCS (偏轴误差扫描 | O(1) LUT 极速标量版) ---
+
+[MCS] | Clear Ocean | 偏轴: 0.0 deg
+    L=10m | Time:  0.10s | Path Loss:   9.84 dB
+    L=20m | Time:  0.11s | Path Loss:  21.29 dB
+    L=30m | Time:  0.13s | Path Loss:  31.21 dB
+    L=40m | Time:  0.16s | Path Loss:  39.96 dB
+    L=50m | Time:  0.19s | Path Loss:  48.50 dB
+    L=60m | Time:  0.22s | Path Loss:  56.58 dB
+
+[MCS] | Clear Ocean | 偏轴: 0.3 deg
+    L=10m | Time:  0.07s | Path Loss:  42.96 dB
+    L=20m | Time:  0.10s | Path Loss:  52.24 dB
+    L=30m | Time:  0.13s | Path Loss:  60.07 dB
+    L=40m | Time:  0.16s | Path Loss:  66.47 dB
+    L=50m | Time:  0.18s | Path Loss:  75.06 dB
+    L=60m | Time:  0.22s | Path Loss:  81.88 dB
+
+[MCS] | Clear Ocean | 偏轴: 1.0 deg
+    L=10m | Time:  0.07s | Path Loss:  51.82 dB
+    L=20m | Time:  0.10s | Path Loss:  60.75 dB
+    L=30m | Time:  0.13s | Path Loss:  68.56 dB
+    L=40m | Time:  0.16s | Path Loss:  75.73 dB
+    L=50m | Time:  0.20s | Path Loss:  82.99 dB
+    L=60m | Time:  0.22s | Path Loss:  89.49 dB
+
+[MCS] | Coastal Ocean | 偏轴: 0.0 deg
+    L=10m | Time:  0.22s | Path Loss:  19.92 dB
+    L=20m | Time:  0.40s | Path Loss:  41.52 dB
+    L=30m | Time:  0.58s | Path Loss:  61.62 dB
+    L=40m | Time:  0.77s | Path Loss:  79.95 dB
+    L=50m | Time:  0.96s | Path Loss:  97.36 dB
+    L=60m | Time:  1.13s | Path Loss: 112.77 dB
+
+[MCS] | Coastal Ocean | 偏轴: 0.3 deg
+    L=10m | Time:  0.21s | Path Loss:  41.69 dB
+    L=20m | Time:  0.41s | Path Loss:  58.69 dB
+    L=30m | Time:  0.58s | Path Loss:  73.88 dB
+    L=40m | Time:  0.77s | Path Loss:  88.76 dB
+    L=50m | Time:  0.94s | Path Loss:  99.43 dB
+    L=60m | Time:  1.13s | Path Loss: 115.49 dB
+
+[MCS] | Coastal Ocean | 偏轴: 1.0 deg
+    L=10m | Time:  0.22s | Path Loss:  49.86 dB
+    L=20m | Time:  0.40s | Path Loss:  64.49 dB
+    L=30m | Time:  0.59s | Path Loss:  78.35 dB
+    L=40m | Time:  0.78s | Path Loss:  91.34 dB
+    L=50m | Time:  0.93s | Path Loss: 103.41 dB
+    L=60m | Time:  1.13s | Path Loss: 117.11 dB
+
+[MCS] | Turbid Harbor | 偏轴: 0.0 deg
+    L= 5m | Time:  1.03s | Path Loss:  41.07 dB
+    L=10m | Time:  2.21s | Path Loss:  71.02 dB
+    L=15m | Time:  3.37s | Path Loss:  86.73 dB
+    L=20m | Time:  4.47s | Path Loss: 106.50 dB
+
+[MCS] | Turbid Harbor | 偏轴: 0.3 deg
+    L= 5m | Time:  1.00s | Path Loss:  45.83 dB
+    L=10m | Time:  2.21s | Path Loss:  72.22 dB
+    L=15m | Time:  3.41s | Path Loss:  90.96 dB
+    L=20m | Time:  4.48s | Path Loss:  96.57 dB
+
+[MCS] | Turbid Harbor | 偏轴: 1.0 deg
+    L= 5m | Time:  1.05s | Path Loss:  49.01 dB
+    L=10m | Time:  2.17s | Path Loss:  73.19 dB
+    L=15m | Time:  3.39s | Path Loss:  88.18 dB
+    L=20m | Time:  4.48s | Path Loss: 104.32 dB
+Exp7 MCS 偏轴数据已保存！
+>> 

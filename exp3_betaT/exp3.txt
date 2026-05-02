@@ -1,0 +1,175 @@
+--- 运行 Exp3.3.1a: WCI-MC 强湍流仿真 ---
+--- 当前束散角: 0.05 deg ---
+    L= 5m | Time:  2.25s | Path Loss:   3.26 dB
+    L=10m | Time:  2.34s | Path Loss:   7.93 dB
+    L=15m | Time:  2.46s | Path Loss:  13.93 dB
+    L=20m | Time:  2.61s | Path Loss:  19.84 dB
+    L=25m | Time:  2.77s | Path Loss:  25.43 dB
+    L=30m | Time:  2.92s | Path Loss:  30.71 dB
+    L=35m | Time:  3.07s | Path Loss:  35.69 dB
+    L=40m | Time:  3.22s | Path Loss:  40.50 dB
+    L=45m | Time:  3.34s | Path Loss:  45.12 dB
+    L=50m | Time:  3.51s | Path Loss:  49.59 dB
+    L=55m | Time:  3.64s | Path Loss:  53.94 dB
+    L=60m | Time:  3.78s | Path Loss:  58.27 dB
+--- 当前束散角: 0.10 deg ---
+    L= 5m | Time:  2.15s | Path Loss:   3.86 dB
+    L=10m | Time:  2.30s | Path Loss:  10.43 dB
+    L=15m | Time:  2.47s | Path Loss:  16.89 dB
+    L=20m | Time:  2.59s | Path Loss:  22.75 dB
+    L=25m | Time:  2.78s | Path Loss:  28.13 dB
+    L=30m | Time:  2.91s | Path Loss:  33.23 dB
+    L=35m | Time:  3.05s | Path Loss:  38.05 dB
+    L=40m | Time:  3.23s | Path Loss:  42.70 dB
+    L=45m | Time:  3.38s | Path Loss:  47.21 dB
+    L=50m | Time:  3.49s | Path Loss:  51.56 dB
+    L=55m | Time:  3.62s | Path Loss:  55.85 dB
+    L=60m | Time:  3.80s | Path Loss:  60.11 dB
+--- 当前束散角: 1.00 deg ---
+    L= 5m | Time:  3.00s | Path Loss:  19.11 dB
+    L=10m | Time:  2.49s | Path Loss:  28.15 dB
+    L=15m | Time:  2.52s | Path Loss:  34.85 dB
+    L=20m | Time:  2.63s | Path Loss:  40.86 dB
+    L=25m | Time:  2.75s | Path Loss:  45.66 dB
+    L=30m | Time:  2.92s | Path Loss:  50.39 dB
+    L=35m | Time:  3.11s | Path Loss:  54.84 dB
+    L=40m | Time:  3.19s | Path Loss:  59.29 dB
+    L=45m | Time:  3.37s | Path Loss:  63.50 dB
+    L=50m | Time:  3.54s | Path Loss:  67.51 dB
+    L=55m | Time:  3.64s | Path Loss:  71.60 dB
+    L=60m | Time:  3.83s | Path Loss:  75.62 dB
+已保存数据至 data_exp3_div_WCIMC_Strong.mat
+>> 
+
+
+--- 运行 Exp3.3.1: Standard MCS (束散角遍历 - FOV截断与衍射对齐) ---
+--- 当前束散角: 0.05 deg ---
+    L= 5m | Time:  6.90s | Path Loss:   3.24 dB
+    L=10m | Time:  0.69s | Path Loss:   7.04 dB
+    L=15m | Time:  0.56s | Path Loss:  11.65 dB
+    L=20m | Time:  0.51s | Path Loss:  16.45 dB
+    L=25m | Time:  0.47s | Path Loss:  21.15 dB
+    L=30m | Time:  0.44s | Path Loss:  25.69 dB
+    L=35m | Time:  0.42s | Path Loss:  30.12 dB
+    L=40m | Time:  0.41s | Path Loss:  34.44 dB
+    L=45m | Time:  0.41s | Path Loss:  38.67 dB
+    L=50m | Time:  0.39s | Path Loss:  42.80 dB
+    L=55m | Time:  0.38s | Path Loss:  46.82 dB
+    L=60m | Time:  0.38s | Path Loss:  50.87 dB
+--- 当前束散角: 0.10 deg ---
+    L= 5m | Time:  7.25s | Path Loss:   3.76 dB
+    L=10m | Time:  4.46s | Path Loss:   9.85 dB
+    L=15m | Time:  3.13s | Path Loss:  15.84 dB
+    L=20m | Time:  2.33s | Path Loss:  21.33 dB
+    L=25m | Time:  1.90s | Path Loss:  26.34 dB
+    L=30m | Time:  1.58s | Path Loss:  31.05 dB
+    L=35m | Time:  1.37s | Path Loss:  35.60 dB
+    L=40m | Time:  1.23s | Path Loss:  40.01 dB
+    L=45m | Time:  1.14s | Path Loss:  44.34 dB
+    L=50m | Time:  1.01s | Path Loss:  48.49 dB
+    L=55m | Time:  0.93s | Path Loss:  52.45 dB
+    L=60m | Time:  0.87s | Path Loss:  56.51 dB
+--- 当前束散角: 1.00 deg ---
+    L= 5m | Time:  0.91s | Path Loss:  19.12 dB
+    L=10m | Time:  0.47s | Path Loss:  28.03 dB
+    L=15m | Time:  0.30s | Path Loss:  34.95 dB
+    L=20m | Time:  0.25s | Path Loss:  40.70 dB
+    L=25m | Time:  0.22s | Path Loss:  46.01 dB
+    L=30m | Time:  0.21s | Path Loss:  50.85 dB
+    L=35m | Time:  0.21s | Path Loss:  54.86 dB
+    L=40m | Time:  0.20s | Path Loss:  59.16 dB
+    L=45m | Time:  0.21s | Path Loss:  63.20 dB
+    L=50m | Time:  0.20s | Path Loss:  67.69 dB
+    L=55m | Time:  0.20s | Path Loss:  72.11 dB
+    L=60m | Time:  0.21s | Path Loss:  75.62 dB
+已保存数据至 data_exp3_div_MCS.mat
+>> 
+
+
+--- 运行 Exp3.3.1: WCI-MC (无湍流基准 - 纯MC追踪 + 衍射极限) ---
+--- 当前束散角: 0.05 deg ---
+    L= 5m | Time:  2.28s | Path Loss:   3.24 dB
+    L=10m | Time:  7.42s | Path Loss:   7.04 dB
+    L=15m | Time:  5.95s | Path Loss:  11.65 dB
+    L=20m | Time:  4.63s | Path Loss:  16.42 dB
+    L=25m | Time:  3.91s | Path Loss:  21.11 dB
+    L=30m | Time:  3.31s | Path Loss:  25.71 dB
+    L=35m | Time:  2.88s | Path Loss:  30.10 dB
+    L=40m | Time:  2.60s | Path Loss:  34.37 dB
+    L=45m | Time:  2.35s | Path Loss:  38.61 dB
+    L=50m | Time:  2.19s | Path Loss:  42.74 dB
+    L=55m | Time:  2.04s | Path Loss:  46.83 dB
+    L=60m | Time:  1.95s | Path Loss:  50.86 dB
+--- 当前束散角: 0.10 deg ---
+    L= 5m | Time:  7.74s | Path Loss:   3.76 dB
+    L=10m | Time:  7.07s | Path Loss:   9.83 dB
+    L=15m | Time:  5.41s | Path Loss:  15.84 dB
+    L=20m | Time:  5.20s | Path Loss:  21.34 dB
+    L=25m | Time:  3.68s | Path Loss:  26.35 dB
+    L=30m | Time:  2.84s | Path Loss:  31.13 dB
+    L=35m | Time:  2.36s | Path Loss:  35.65 dB
+    L=40m | Time:  2.04s | Path Loss:  39.97 dB
+    L=45m | Time:  1.80s | Path Loss:  44.33 dB
+    L=50m | Time:  1.64s | Path Loss:  48.51 dB
+    L=55m | Time:  1.54s | Path Loss:  52.59 dB
+    L=60m | Time:  1.44s | Path Loss:  56.51 dB
+--- 当前束散角: 1.00 deg ---
+    L= 5m | Time:  0.92s | Path Loss:  19.11 dB
+    L=10m | Time:  0.37s | Path Loss:  28.09 dB
+    L=15m | Time:  0.31s | Path Loss:  34.79 dB
+    L=20m | Time:  0.32s | Path Loss:  40.92 dB
+    L=25m | Time:  0.33s | Path Loss:  45.59 dB
+    L=30m | Time:  0.35s | Path Loss:  50.09 dB
+    L=35m | Time:  0.38s | Path Loss:  54.90 dB
+    L=40m | Time:  0.40s | Path Loss:  59.45 dB
+    L=45m | Time:  0.43s | Path Loss:  63.25 dB
+    L=50m | Time:  0.46s | Path Loss:  67.26 dB
+    L=55m | Time:  0.49s | Path Loss:  70.89 dB
+    L=60m | Time:  0.52s | Path Loss:  74.95 dB
+已保存无湍流解析基准数据至 data_exp3_div_WCIMC_None.mat
+>> 
+
+
+
+--- 运行 Exp3.3.1b: WCI-MC 弱湍流仿真 ---
+--- 当前束散角: 0.05 deg ---
+    L= 5m | Time:  3.31s | Path Loss:   3.24 dB
+    L=10m | Time:  9.58s | Path Loss:   7.05 dB
+    L=15m | Time:  3.39s | Path Loss:  11.65 dB
+    L=20m | Time:  2.74s | Path Loss:  16.43 dB
+    L=25m | Time:  2.59s | Path Loss:  21.12 dB
+    L=30m | Time:  2.65s | Path Loss:  25.73 dB
+    L=35m | Time:  2.74s | Path Loss:  30.14 dB
+    L=40m | Time:  2.85s | Path Loss:  34.41 dB
+    L=45m | Time:  2.96s | Path Loss:  38.66 dB
+    L=50m | Time:  3.11s | Path Loss:  42.80 dB
+    L=55m | Time:  3.21s | Path Loss:  46.89 dB
+    L=60m | Time:  3.33s | Path Loss:  50.92 dB
+--- 当前束散角: 0.10 deg ---
+    L= 5m | Time:  8.54s | Path Loss:   3.75 dB
+    L=10m | Time:  8.83s | Path Loss:   9.83 dB
+    L=15m | Time:  6.86s | Path Loss:  15.84 dB
+    L=20m | Time:  4.80s | Path Loss:  21.35 dB
+    L=25m | Time:  3.96s | Path Loss:  26.35 dB
+    L=30m | Time:  3.58s | Path Loss:  31.14 dB
+    L=35m | Time:  3.38s | Path Loss:  35.66 dB
+    L=40m | Time:  3.31s | Path Loss:  39.97 dB
+    L=45m | Time:  3.28s | Path Loss:  44.32 dB
+    L=50m | Time:  3.28s | Path Loss:  48.49 dB
+    L=55m | Time:  3.36s | Path Loss:  52.58 dB
+    L=60m | Time:  3.46s | Path Loss:  56.57 dB
+--- 当前束散角: 1.00 deg ---
+    L= 5m | Time:  2.30s | Path Loss:  19.11 dB
+    L=10m | Time:  2.13s | Path Loss:  28.09 dB
+    L=15m | Time:  2.19s | Path Loss:  34.80 dB
+    L=20m | Time:  2.28s | Path Loss:  40.86 dB
+    L=25m | Time:  2.41s | Path Loss:  45.58 dB
+    L=30m | Time:  2.54s | Path Loss:  50.12 dB
+    L=35m | Time:  2.65s | Path Loss:  54.90 dB
+    L=40m | Time:  2.81s | Path Loss:  59.41 dB
+    L=45m | Time:  2.94s | Path Loss:  63.21 dB
+    L=50m | Time:  3.05s | Path Loss:  67.05 dB
+    L=55m | Time:  3.18s | Path Loss:  70.88 dB
+    L=60m | Time:  3.34s | Path Loss:  74.95 dB
+已保存数据至 data_exp3_div_WCIMC_Weak.mat
+>> 
