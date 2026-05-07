@@ -166,10 +166,7 @@ for w_idx = 1:num_W
                         cz = vec_x*d2_v - vec_y*d1_v;
                         r_wp = sqrt(cx^2 + cy^2 + cz^2);
                         
-                        rho_0_sph = rho0_Link * (L / v_len)^(3/5);
-                        W_ST = (2 * v_len / (k_wave * rho_0_sph)) * max(0, 1 - 0.37*(rho_0_sph/(2*r_eff_v))^(1/3));
-                        
-                        if W_ST > 1e-6, point_loss = 1 - marcumq(2*r_wp/W_ST, 2*r_eff_v/W_ST); else, point_loss = double(r_wp <= r_eff_v); end
+                        point_loss = double(r_wp <= r_eff_v);
                         P_packet = P_packet + base_w * point_loss;
                     end
                 end

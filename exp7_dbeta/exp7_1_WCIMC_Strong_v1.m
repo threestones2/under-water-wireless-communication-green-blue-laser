@@ -61,7 +61,6 @@ for w_idx = 1:num_W
             Lx = Link_Dir(1); Ly = Link_Dir(2); Lz = Link_Dir(3); Nx = Rx_Normal(1); Ny = Rx_Normal(2); Nz = Rx_Normal(3); Tx = Tx_Pos(1); Ty = Tx_Pos(2); Tz = Tx_Pos(3); Rx = Rx_Pos(1); Ry = Rx_Pos(2); Rz = Rx_Pos(3); Ux = u_vec_Tx(1); Uy = u_vec_Tx(2); Uz = u_vec_Tx(3); Vx = v_vec_Tx(1); Vy = v_vec_Tx(2); Vz = v_vec_Tx(3);
             
             P_rx_accum = 0; tic; 
-            % rng(123456 + L + a_idx*100, 'twister');
             rng(123456, 'twister');
             
             for p = 1:N_packets

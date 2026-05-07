@@ -15,10 +15,10 @@ N_packets = 1e5; n_max = 200;
 lambda = 514e-9; k_wave = 2 * pi / lambda;
 
 w0 = 0.002;                                
-div_angle = 10 * pi / 180;                
-theta_half_div = div_angle / 2; 
-Rx_Aperture = 0.05;                        
-Rx_FOV = 40 * pi / 180;                     
+div_angle = 0.1 * pi / 180;
+theta_half_div = div_angle / 2;
+Rx_Aperture = 0.01;
+Rx_FOV = 20 * pi / 180;                     
 Rx_Area = pi * (Rx_Aperture / 2)^2;
 
 cos_FOV_half = cos(Rx_FOV / 2);
@@ -126,10 +126,10 @@ for w_idx = 1:num_W
                     ray_march_flat_scalar(p1, p2, p3, d1, d2, d3, d_step, Rx, Ry, Rz, Rx_Aperture_half_sq, cos_FOV_half, Nx, Ny, Nz, false, Grad_X_3D, Grad_Y_3D, Screen_Z_1D, Ux, Uy, Uz, Vx, Vy, Vz, k_wave, x_axis(1), dx, N_grid, Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
                 
                 weight = weight * exp(-param.coef_a * step_len);
-                
-                if (p1 - Tx)*Lx + (p2 - Ty)*Ly + (p3 - Tz)*Lz >= L || weight < 1e-15
-                    break; 
-                end 
+
+                if (p1 - Tx)*Lx + (p2 - Ty)*Ly + (p3 - Tz)*Lz >= L || weight < 1e-4
+                    break;
+                end
                 
                 vec2rx_1 = Rx - p1; vec2rx_2 = Ry - p2; vec2rx_3 = Rz - p3;
                 d2rx_sq = vec2rx_1^2 + vec2rx_2^2 + vec2rx_3^2;
@@ -160,10 +160,7 @@ for w_idx = 1:num_W
                         cz = vec_x*d2_v - vec_y*d1_v;
                         r_wp = sqrt(cx^2 + cy^2 + cz^2);
                         
-                        rho_0_sph = rho0_Link * (L / v_len)^(3/5);
-                        W_ST = (2 * v_len / (k_wave * rho_0_sph)) * max(0, 1 - 0.37*(rho_0_sph/(2*r_eff_v))^(1/3));
-                        
-                        if W_ST > 1e-6, point_loss = 1 - marcumq(2*r_wp/W_ST, 2*r_eff_v/W_ST); else, point_loss = double(r_wp <= r_eff_v); end
+                        point_loss = double(r_wp <= r_eff_v);
                         P_packet = P_packet + base_w * point_loss;
                     end
                 end

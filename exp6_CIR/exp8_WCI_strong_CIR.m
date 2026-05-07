@@ -3,7 +3,7 @@
 clc; clear; close all;
 cd(fileparts(mfilename('fullpath')));
 
-N_packets = 1e7; 
+N_packets = 1e5; 
 n_max = 200; 
 c_water = 2.237e8;
 lambda = 514e-9; 

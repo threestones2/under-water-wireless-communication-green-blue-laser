@@ -1,7 +1,7 @@
 %% Exp2: MCS (Traditional LUT Baseline, Extreme O(1) LUT Acceleration)
 % 优化声明: 
 % 1. 保留三维广义矢量运算，完全兼容非视距(NLOS)与收发未对准场景。
-% 2. 引入 O(1) 复杂度等概率反函数查找表(Inverse CDF LUT)，彻底消灭 interp1 耗时。
+% 2. 引入 O(1) 复杂度等概率反函数查找表(Inverse CDF LUT)，避免差值算法的耗时。
 % 3. 解除矩阵运算中的临时内存分配 (如 .^2 和 sum)，恢复 JIT 极速编译。
 % 4. 算力优化: 引入 FOV 空间截断剔除策略，切断游走出视场锥的无效光子追踪。
 clc; clear; close all;
