@@ -137,7 +137,8 @@ function [Phi_n_func, k_wave] = get_OTOPS_spectrum_handle(lambda, T, S, epsilon,
     alpha_c = 2.6e-4; beta_c = 7.6e-4; R_rho = alpha_c * abs(H_ratio) / beta_c;
     if R_rho >= 1, d_r = R_rho + sqrt(R_rho)*sqrt(R_rho-1);
     elseif R_rho >= 0.5, d_r = 1.85*R_rho - 0.85;
-    else, d_r = 0.15*R_rho; end
+    else, d_r = 0.15*R_rho; 
+    end
     
     chi_S = chi_T * d_r / (H_ratio^2); chi_TS = chi_T * (1 + d_r) / (2 * H_ratio); 
     coeff_Hill = 0.72 / (4 * pi); 
