@@ -1,6 +1,6 @@
-%% exp10_2: SA-MCS (Semi-Analytical MCS) — 光子数扫描
-%  半解析 MCS：纯几何弹道 + 每散射节点局部估计贡献 + LUT 散射角抽样
-%  无 ray_march 开销，纯解析几何，面向嵌入式高效率信道估计
+%% exp10_2_SA_MCS_Inv: SA-MCS (Semi-Analytical MCS) — Inverse Transform 散射角抽样
+%  半解析 MCS：纯几何弹道 + 每散射节点局部估计贡献 + 反变换法散射角抽样
+%  与 exp10_2_SA_MCS 的区别：散射角抽样不使用预计算 LUT，改用 interp1 反变换法
 
 clc; clear; close all;
 cd(fileparts(mfilename('fullpath')));
@@ -31,7 +31,7 @@ Rx_Aperture_half_sq = (Rx_Aperture / 2)^2;
 PL_Cell = cell(1, num_W);
 Time_Cell = cell(1, num_W);
 
-fprintf('--- exp10_2: SA-MCS (半解析 Local Estimation) 光子数扫描 ---\n');
+fprintf('--- exp10_2_SA_MCS_Inv: SA-MCS (反变换法散射角抽样) 光子数扫描 ---\n');
 
 for w_idx = 1:num_W
     param.coef_a = coef_a_arr(w_idx);
@@ -40,19 +40,17 @@ for w_idx = 1:num_W
     param.albedo = param.coef_b / param.coef_c;
     param = calc_haltrin_params(param);
 
-    % 构建散射相函数 O(1) LUT
-    th_axis = linspace(0, pi, 50000); pdf_vals = zeros(size(th_axis));
+    % 构建散射相函数 CDF 网格 (供反变换法 interp1 使用)
+    th_axis = linspace(0, pi, 50000);
+    pdf_vals = zeros(size(th_axis));
     for i = 1:length(th_axis)
         pdf_vals(i) = pdf_Empirical(cos(th_axis(i)), param) * 2 * pi * sin(th_axis(i));
     end
     cdf_vals = cumtrapz(th_axis, pdf_vals);
     cdf_vals = cdf_vals / cdf_vals(end);
+    % 保证 CDF 严格单调递增 (去重) 以备 interp1 使用
     [cdf_uniq, idx_uniq] = unique(cdf_vals);
-    LUT_SIZE = 100000;
-    P_grid = linspace(0, 1, LUT_SIZE);
-    th_LUT = interp1(cdf_uniq, th_axis(idx_uniq), P_grid, 'linear', 'extrap');
-    cos_th_LUT = cos(th_LUT);
-    sin_th_LUT = sin(th_LUT);
+    th_uniq = th_axis(idx_uniq);
 
     dist_arr = dist_cell{w_idx};
     num_D = length(dist_arr);
@@ -74,22 +72,23 @@ for w_idx = 1:num_W
 
             for p = 1:N_packets
                 % --- 光源采样 ---
-                r0 = w0 * sqrt(-0.5*log(rand()));
-                phi0 = 2*pi*rand();
-                pos = [r0*cos(phi0), 0, r0*sin(phi0)];
+                r0 = w0 * sqrt(-0.5 * log(rand()));
+                phi0 = 2 * pi * rand();
+                pos = [r0 * cos(phi0), 0, r0 * sin(phi0)];
 
                 U_init = theta_half_div * sqrt(-0.5 * log(rand()));
-                dir = rotate_direction_fast(link_dir, cos(U_init), sin(U_init), 2*pi*rand());
+                dir = rotate_direction_fast(link_dir, cos(U_init), sin(U_init), 2 * pi * rand());
 
-                weight = 1.0; P_packet = 0;
+                weight = 1.0;
+                P_packet = 0;
 
                 % --- 弹道路径 (纯几何，无 ray_march) ---
-                cos_th_bal = dir(2);  % dot(dir, link_dir), link_dir=[0,1,0]
+                cos_th_bal = dir(2);
                 if cos_th_bal > 0
                     d_plane = (L - pos(2)) / cos_th_bal;
                     pos_end = pos + dir * d_plane;
                     r_hit_sq = pos_end(1)^2 + pos_end(3)^2;
-                    cos_rx_tilt = abs(dir(2));  % abs(dot(dir, rx_normal)), rx_normal=[0,-1,0]
+                    cos_rx_tilt = abs(dir(2));
 
                     if cos_rx_tilt >= cos_FOV_half && r_hit_sq <= Rx_Aperture_half_sq
                         P_packet = P_packet + exp(-param.coef_c * d_plane);
@@ -111,7 +110,7 @@ for w_idx = 1:num_W
                     dist2rx = norm(vec2rx);
                     dir2rx = vec2rx / dist2rx;
 
-                    cos_inc = dir2rx(2);  % dot(dir2rx, -rx_normal), -rx_normal=[0,1,0]
+                    cos_inc = dir2rx(2);
                     if cos_inc >= cos_FOV_half
                         cos_scatter = dot(dir, dir2rx);
                         solid_angle = Rx_Area / (dist2rx^2) * cos_inc;
@@ -119,11 +118,11 @@ for w_idx = 1:num_W
                         P_packet = P_packet + base_w;
                     end
 
-                    % O(1) LUT 散射角抽样
-                    idx_lut = floor(rand() * (LUT_SIZE - 1)) + 1;
-                    ct_s = cos_th_LUT(idx_lut);
-                    st_s = sin_th_LUT(idx_lut);
-                    dir = rotate_direction_fast(dir, ct_s, st_s, 2*pi*rand());
+                    % === 反变换法散射角抽样 (替代 LUT) ===
+                    th_s = interp1(cdf_uniq, th_uniq, rand(), 'linear');
+                    ct_s = cos(th_s);
+                    st_s = sin(th_s);
+                    dir = rotate_direction_fast(dir, ct_s, st_s, 2 * pi * rand());
                 end
                 P_rx_accum = P_rx_accum + P_packet;
             end
@@ -138,40 +137,49 @@ for w_idx = 1:num_W
     Time_Cell{w_idx} = Time_matrix;
 end
 
-save('data_exp10_SA_MCS.mat', 'dist_cell', 'PL_Cell', 'Time_Cell', 'N_packets_arr', 'water_types');
-fprintf('已保存至 data_exp10_SA_MCS.mat\n');
+save('data_exp10_SA_MCS_Inv.mat', 'dist_cell', 'PL_Cell', 'Time_Cell', 'N_packets_arr', 'water_types');
+fprintf('已保存至 data_exp10_SA_MCS_Inv.mat\n');
 
 % ================= 辅助函数 =================
 function param = calc_haltrin_params(p)
     b_e = p.coef_b; al_e = p.albedo;
-    p.q_e = 2.598 + 17.748*sqrt(b_e) - 16.722*b_e + 5.932*b_e*sqrt(b_e);
-    p.k1 = 1.188 - 0.688*al_e; p.k2 = 0.1*(3.07 - 1.90*al_e);
-    p.k3 = 0.01*(4.58 - 3.02*al_e); p.k4 = 0.001*(3.24 - 2.25*al_e);
-    p.k5 = 0.0001*(0.84 - 0.61*al_e);
-    th = linspace(0, pi, 2000); val = zeros(size(th));
+    p.q_e = 2.598 + 17.748 * sqrt(b_e) - 16.722 * b_e + 5.932 * b_e * sqrt(b_e);
+    p.k1 = 1.188 - 0.688 * al_e;
+    p.k2 = 0.1 * (3.07 - 1.90 * al_e);
+    p.k3 = 0.01 * (4.58 - 3.02 * al_e);
+    p.k4 = 0.001 * (3.24 - 2.25 * al_e);
+    p.k5 = 0.0001 * (0.84 - 0.61 * al_e);
+    th = linspace(0, pi, 2000);
+    val = zeros(size(th));
     for i = 1:2000
-        t = max(th(i)*180/pi, 1e-6); sq_t = sqrt(t); t_sq = t*t;
-        term = 1 - p.k1*sq_t + p.k2*t - p.k3*t*sq_t + p.k4*t_sq - p.k5*t_sq*sq_t;
+        t = max(th(i) * 180 / pi, 1e-6);
+        sq_t = sqrt(t);
+        t_sq = t * t;
+        term = 1 - p.k1 * sq_t + p.k2 * t - p.k3 * t * sq_t + p.k4 * t_sq - p.k5 * t_sq * sq_t;
         val(i) = exp(p.q_e * term);
     end
-    p.b_emp_norm = 2*pi*trapz(th, val.*sin(th)); param = p;
+    p.b_emp_norm = 2 * pi * trapz(th, val .* sin(th));
+    param = p;
 end
 
 function p = pdf_Empirical(cos_theta, param)
     t_deg = max(acos(cos_theta) * 180 / pi, 1e-6);
-    sq_t = sqrt(t_deg); t_sq = t_deg * t_deg;
-    term = 1 - param.k1*sq_t + param.k2*t_deg - param.k3*t_deg*sq_t ...
-           + param.k4*t_sq - param.k5*t_sq*sq_t;
+    sq_t = sqrt(t_deg);
+    t_sq = t_deg * t_deg;
+    term = 1 - param.k1 * sq_t + param.k2 * t_deg - param.k3 * t_deg * sq_t ...
+           + param.k4 * t_sq - param.k5 * t_sq * sq_t;
     p = exp(param.q_e * term) / param.b_emp_norm;
 end
 
 function nd = rotate_direction_fast(d, ct, st, psi_s)
-    denom = sqrt(1 - d(3)^2); sp = sin(psi_s); cp = cos(psi_s);
+    denom = sqrt(1 - d(3)^2);
+    sp = sin(psi_s);
+    cp = cos(psi_s);
     if denom < 1e-10
-        nd = [st*cp, st*sp, sign(d(3))*ct];
+        nd = [st * cp, st * sp, sign(d(3)) * ct];
     else
-        nd = [st/denom*(d(1)*d(3)*cp - d(2)*sp) + d(1)*ct, ...
-              st/denom*(d(2)*d(3)*cp + d(1)*sp) + d(2)*ct, ...
-              -st*cp*denom + d(3)*ct];
+        nd = [st / denom * (d(1) * d(3) * cp - d(2) * sp) + d(1) * ct, ...
+              st / denom * (d(2) * d(3) * cp + d(1) * sp) + d(2) * ct, ...
+              -st * cp * denom + d(3) * ct];
     end
 end

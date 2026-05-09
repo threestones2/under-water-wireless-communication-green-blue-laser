@@ -8,16 +8,16 @@ lambda = lambda_nm * 1e-9;  % 波长 (m)
 % 环境参数 (Petzold Clear Ocean + OTOPS)
 T_avg = 20;        % 温度 (°C)
 S_avg = 35;        % 盐度 (ppt)
-epsilon = 1e-6;    % 动能耗散率 (m^2/s^3)
-chi_T = 1e-8;      % 温度方差耗散率 (K^2/s)
-eta = 1e-3;        % Kolmogorov 内尺度 (m)
-H_ratio = -20;     % 温盐度梯度比
+epsilon = 1e-10;    % 动能耗散率 (m^2/s^3)
+chi_T = 1e-5;      % 温度方差耗散率 (K^2/s)
+eta = 1e-2;        % Kolmogorov 内尺度 (m)
+H_ratio = -1;     % 温盐度梯度比
 
 % 相位屏几何参数
-D_screen = 1;             % 相位屏边长 (m)
-N_grid = 2^8;               % 网格点数 (256x256)
-Link_Dist = 10;            % 总链路距离 (m)
-N_screens = 10;             % 屏的数量
+D_screen = 0.1;             % 相位屏边长 (m)
+N_grid = 2^10;               % 网格点数 (256x256)
+Link_Dist = 80;            % 总链路距离 (m)
+N_screens = 20;             % 屏的数量
 delta_z_screen = Link_Dist / N_screens; % 单张屏代表的厚度 (m)
 
 %% 2. 计算 OTOPS 谱句柄

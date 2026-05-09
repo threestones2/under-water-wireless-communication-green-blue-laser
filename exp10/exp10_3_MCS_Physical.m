@@ -13,10 +13,9 @@ coef_b_arr = [0.0374, 0.219, 1.824];
 coef_c_arr = [0.1514, 0.398, 2.190];
 num_W = length(water_types);
 
-N_packets = 1e7;
+N_packets = 1e8;
 n_max = 200;
 
-lambda = 514e-9; k_wave = 2 * pi / lambda;
 w0 = 0.002;
 div_angle = 0.1 * pi / 180;
 theta_half_div = div_angle / 2;
@@ -27,10 +26,6 @@ Rx_Area = pi * (Rx_Aperture / 2)^2;
 cos_FOV_half = cos(Rx_FOV / 2);
 Rx_Aperture_half_sq = (Rx_Aperture / 2)^2;
 
-% ================= 无湍流：哑元相位屏 =================
-Grad_X_3D = zeros(1, 1, 1); Grad_Y_3D = zeros(1, 1, 1);
-Screen_Z_1D = [1e10]; dx_s = 1; N_grid_s = 1;
-x_axis = [0]; delta_z_screen = 1e10;
 
 PL_Cell = cell(1, num_W);
 Time_Cell = cell(1, num_W);
@@ -93,56 +88,63 @@ for w_idx = 1:num_W
 
             weight = 1.0; P_packet = 0;
 
-            % 保存初始状态 (弹道检查后恢复)
-            p1_0 = p1; p2_0 = p2; p3_0 = p3;
-            d1_0 = d1; d2_0 = d2; d3_0 = d3;
-
-            % --- 弹道检查 (阶数 0) ---
-            [p1, p2, p3, d1, d2, d3, bal_hit, bal_len] = ...
-                ray_march_flat_scalar(p1, p2, p3, d1, d2, d3, 1e9, ...
-                Rx, Ry, Rz, Rx_Aperture_half_sq, cos_FOV_half, ...
-                Nx, Ny, Nz, true, ...
-                Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-                Ux, Uy, Uz, Vx, Vy, Vz, k_wave, ...
-                x_axis(1), dx_s, N_grid_s, ...
-                Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
-
-            if bal_hit
-                P_packet = exp(-param.coef_c * bal_len);
-                P_rx_accum = P_rx_accum + P_packet;
-                continue;
+            % --- 弹道检查 (阶数 0，命中孔径才跳过散射) ---
+            denom_bal = d1*Nx + d2*Ny + d3*Nz;
+            t_bal = -1;
+            if abs(denom_bal) > 1e-10
+                t_bal = ((Rx-p1)*Nx + (Ry-p2)*Ny + (Rz-p3)*Nz) / denom_bal;
+                if t_bal > 0
+                    p_end_1 = p1 + d1 * t_bal;
+                    p_end_2 = p2 + d2 * t_bal;
+                    p_end_3 = p3 + d3 * t_bal;
+                    cos_rx_tilt = abs(denom_bal);
+                    if cos_rx_tilt >= cos_FOV_half
+                        vec_x = p_end_1 - Rx; vec_y = p_end_2 - Ry; vec_z = p_end_3 - Rz;
+                        cx = vec_y*d3 - vec_z*d2;
+                        cy = vec_z*d1 - vec_x*d3;
+                        cz = vec_x*d2 - vec_y*d1;
+                        r_wander_perp = sqrt(cx^2 + cy^2 + cz^2);
+                        r_eff = (Rx_Aperture/2) * sqrt(cos_rx_tilt);
+                        if r_wander_perp <= r_eff
+                            P_rx_accum = P_rx_accum + exp(-param.coef_c * t_bal);
+                            continue;  % 弹道命中，跳过散射
+                        end
+                    end
+                end
             end
-
-            if (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz >= L
-                continue;
-            end
-
-            % 恢复初始状态
-            p1 = p1_0; p2 = p2_0; p3 = p3_0;
-            d1 = d1_0; d2 = d2_0; d3 = d3_0;
-            weight = 1.0;
 
             % --- 散射游走 (阶数 >= 1) ---
             for ord = 1:n_max
                 d_step = -log(rand()) / param.coef_b;
 
-                [p1, p2, p3, d1, d2, d3, hit_flag, step_len] = ...
-                    ray_march_flat_scalar(p1, p2, p3, d1, d2, d3, d_step, ...
-                    Rx, Ry, Rz, Rx_Aperture_half_sq, cos_FOV_half, ...
-                    Nx, Ny, Nz, true, ...
-                    Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-                    Ux, Uy, Uz, Vx, Vy, Vz, k_wave, ...
-                    x_axis(1), dx_s, N_grid_s, ...
-                    Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
+                p1_prev = p1; p2_prev = p2; p3_prev = p3;
 
-                weight = weight * exp(-param.coef_a * step_len);
+                p1 = p1 + d1 * d_step;
+                p2 = p2 + d2 * d_step;
+                p3 = p3 + d3 * d_step;
 
-                if hit_flag
-                    P_packet = P_packet + weight * exp(-param.coef_b * step_len);
+                if (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz >= L
+                    if ord > 1
+                        denom = d1*Nx + d2*Ny + d3*Nz;
+                        if abs(denom) > 1e-10
+                            t_rx = ((Rx-p1_prev)*Nx + (Ry-p2_prev)*Ny + (Rz-p3_prev)*Nz) / denom;
+                            if t_rx > 0 && t_rx <= d_step
+                                px = p1_prev + d1 * t_rx;
+                                py = p2_prev + d2 * t_rx;
+                                pz = p3_prev + d3 * t_rx;
+                                r2 = (px-Rx)^2 + (py-Ry)^2 + (pz-Rz)^2;
+                                if r2 <= Rx_Aperture_half_sq && -(denom) >= cos_FOV_half
+                                    P_packet = P_packet + weight * exp(-param.coef_c * t_rx);
+                                end
+                            end
+                        end
+                    end
                     break;
                 end
 
-                if (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz >= L || weight < 1e-6
+                weight = weight * exp(-param.coef_a * d_step);
+
+                if weight < 1e-8
                     break;
                 end
 
@@ -169,69 +171,6 @@ save('data_exp10_MCS_Physical.mat', 'dist_cell', 'PL_Cell', 'Time_Cell', 'N_pack
 fprintf('已保存参考真值至 data_exp10_MCS_Physical.mat\n');
 
 % ================= 辅助函数 =================
-function [p1, p2, p3, d1, d2, d3, hit_flag, total_len] = ray_march_flat_scalar(...
-        p1, p2, p3, d1, d2, d3, dist_limit, Rx, Ry, Rz, ...
-        Rx_Aperture_half_sq, cos_FOV_half, Nx, Ny, Nz, enable_hit_check, ...
-        Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-        Ux, Uy, Uz, Vx, Vy, Vz, k_wave, x0, dx, N_grid, ...
-        Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen)
-    hit_flag = false; total_len = 0; rem_dist = dist_limit;
-    N_screens = length(Screen_Z_1D);
-    while rem_dist > 1e-9
-        dir_z = d1*Lx + d2*Ly + d3*Lz;
-        z_pos = (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz;
-        t_scr = inf; target_idx = -1;
-        if dir_z > 1e-10
-            target_idx = floor((z_pos + 1e-9) / delta_z_screen) + 1;
-            if target_idx < 1, target_idx = 1; end
-            if target_idx <= N_screens
-                t_scr = (Screen_Z_1D(target_idx) - z_pos) / dir_z;
-            end
-        elseif dir_z < -1e-10
-            target_idx = ceil((z_pos - 1e-9) / delta_z_screen) - 1;
-            if target_idx > N_screens, target_idx = N_screens; end
-            if target_idx >= 1
-                t_scr = (Screen_Z_1D(target_idx) - z_pos) / dir_z;
-            end
-        end
-        t_rx = inf;
-        if enable_hit_check
-            denom_rx = d1*Nx + d2*Ny + d3*Nz;
-            if abs(denom_rx) > 1e-10
-                t_temp = ((Rx-p1)*Nx + (Ry-p2)*Ny + (Rz-p3)*Nz) / denom_rx;
-                if t_temp > -1e-7, t_rx = max(0, t_temp); end
-            end
-        end
-        [min_dist, event_idx] = min([rem_dist, t_rx, t_scr]);
-        p1 = p1 + d1 * min_dist;
-        p2 = p2 + d2 * min_dist;
-        p3 = p3 + d3 * min_dist;
-        rem_dist = rem_dist - min_dist;
-        total_len = total_len + min_dist;
-        if event_idx == 2
-            if (p1-Rx)^2 + (p2-Ry)^2 + (p3-Rz)^2 <= Rx_Aperture_half_sq && ...
-               -(d1*Nx + d2*Ny + d3*Nz) >= cos_FOV_half
-                hit_flag = true;
-            end
-            break;
-        elseif event_idx == 3
-            loc_u = (p1-Tx)*Ux + (p2-Ty)*Uy + (p3-Tz)*Uz;
-            loc_v = (p1-Tx)*Vx + (p2-Ty)*Vy + (p3-Tz)*Vz;
-            idx_x = mod(round((loc_u - x0)/dx), N_grid) + 1;
-            idx_y = mod(round((loc_v - x0)/dx), N_grid) + 1;
-            gx = Grad_X_3D(idx_y, idx_x, target_idx);
-            gy = Grad_Y_3D(idx_y, idx_x, target_idx);
-            d1 = d1 + (gx*Ux + gy*Vx) / k_wave;
-            d2 = d2 + (gx*Uy + gy*Vy) / k_wave;
-            d3 = d3 + (gx*Uz + gy*Vz) / k_wave;
-            d_norm = sqrt(d1^2 + d2^2 + d3^2);
-            d1 = d1/d_norm; d2 = d2/d_norm; d3 = d3/d_norm;
-        elseif event_idx == 1
-            break;
-        end
-    end
-end
-
 function param = calc_haltrin_params(p)
     b_e = p.coef_b; al_e = p.albedo;
     p.q_e = 2.598 + 17.748*sqrt(b_e) - 16.722*b_e + 5.932*b_e*sqrt(b_e);

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\余重俊\\\\.claude\" -Recurse -Filter \"*.json\")",
+      "Bash(Select-Object FullName)",
+      "mcp__tavily__tavily_search"
+    ]
+  }
+}

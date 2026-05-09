@@ -13,11 +13,10 @@ coef_b_arr = [0.0374, 0.219, 1.824];
 coef_c_arr = [0.1514, 0.398, 2.190];
 num_W = length(water_types);
 
-N_packets_arr = [1e3, 1e4, 1e5, 1e6, 1e7];
+N_packets_arr = [1e3, 1e4, 1e5];
 num_N = length(N_packets_arr);
 n_max = 200;
 
-lambda = 514e-9; k_wave = 2 * pi / lambda;
 w0 = 0.002;
 div_angle = 0.1 * pi / 180;
 theta_half_div = div_angle / 2;
@@ -28,10 +27,7 @@ Rx_Area = pi * (Rx_Aperture / 2)^2;
 cos_FOV_half = cos(Rx_FOV / 2);
 Rx_Aperture_half_sq = (Rx_Aperture / 2)^2;
 
-% ================= 无湍流：哑元相位屏 =================
-Grad_X_3D = zeros(1, 1, 1); Grad_Y_3D = zeros(1, 1, 1);
-Screen_Z_1D = [1e10]; dx_s = 1; N_grid_s = 1;
-x_axis = [0]; delta_z_screen = 1e10;
+
 
 PL_Cell = cell(1, num_W);   % {water_type}(distance, N_idx)
 Time_Cell = cell(1, num_W);
@@ -86,44 +82,39 @@ for w_idx = 1:num_W
 
                 weight = 1.0; P_packet = 0;
 
-                % --- 弹道光子 (无湍流：纯几何截断) ---
-                [p1_end, p2_end, p3_end, d1_end, d2_end, d3_end, plane_hit, path_len_ballistic] = ...
-                    ray_march_flat_scalar(p1, p2, p3, d1, d2, d3, 1e9, ...
-                    Rx, Ry, Rz, 1e9, -1, Nx, Ny, Nz, true, ...
-                    Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-                    Ux, Uy, Uz, Vx, Vy, Vz, k_wave, ...
-                    x_axis(1), dx_s, N_grid_s, ...
-                    Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
-
-                if plane_hit
-                    cos_rx_tilt = abs(d1_end*Nx + d2_end*Ny + d3_end*Nz);
-                    if cos_rx_tilt >= cos_FOV_half
-                        vec_x = p1_end - Rx; vec_y = p2_end - Ry; vec_z = p3_end - Rz;
-                        cx = vec_y*d3_end - vec_z*d2_end;
-                        cy = vec_z*d1_end - vec_x*d3_end;
-                        cz = vec_x*d2_end - vec_y*d1_end;
-                        r_wander_perp = sqrt(cx^2 + cy^2 + cz^2);
-                        r_eff = (Rx_Aperture/2) * sqrt(cos_rx_tilt);
-                        recv_frac = double(r_wander_perp <= r_eff);
-                        P_packet = P_packet + exp(-param.coef_c * path_len_ballistic) * recv_frac;
+                % --- 弹道光子 (内联几何，无函数调用) ---
+                denom_bal = d1*Nx + d2*Ny + d3*Nz;
+                if abs(denom_bal) > 1e-10
+                    t_bal = ((Rx-p1)*Nx + (Ry-p2)*Ny + (Rz-p3)*Nz) / denom_bal;
+                    if t_bal > 0
+                        p_end_1 = p1 + d1 * t_bal;
+                        p_end_2 = p2 + d2 * t_bal;
+                        p_end_3 = p3 + d3 * t_bal;
+                        cos_rx_tilt = abs(d1*Nx + d2*Ny + d3*Nz);
+                        if cos_rx_tilt >= cos_FOV_half
+                            vec_x = p_end_1 - Rx; vec_y = p_end_2 - Ry; vec_z = p_end_3 - Rz;
+                            cx = vec_y*d3 - vec_z*d2;
+                            cy = vec_z*d1 - vec_x*d3;
+                            cz = vec_x*d2 - vec_y*d1;
+                            r_wander_perp = sqrt(cx^2 + cy^2 + cz^2);
+                            r_eff = (Rx_Aperture/2) * sqrt(cos_rx_tilt);
+                            if r_wander_perp <= r_eff
+                                P_packet = P_packet + exp(-param.coef_c * t_bal);
+                            end
+                        end
                     end
                 end
 
                 % --- 散射光子 ---
                 for ord = 1:n_max
                     d_step = -log(rand()) / param.coef_b;
-                    [p1, p2, p3, d1, d2, d3, ~, step_len] = ...
-                        ray_march_flat_scalar(p1, p2, p3, d1, d2, d3, d_step, ...
-                        Rx, Ry, Rz, Rx_Aperture_half_sq, cos_FOV_half, ...
-                        Nx, Ny, Nz, false, ...
-                        Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-                        Ux, Uy, Uz, Vx, Vy, Vz, k_wave, ...
-                        x_axis(1), dx_s, N_grid_s, ...
-                        Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
+                    p1 = p1 + d1 * d_step;
+                    p2 = p2 + d2 * d_step;
+                    p3 = p3 + d3 * d_step;
 
-                    weight = weight * exp(-param.coef_a * step_len);
+                    weight = weight * exp(-param.coef_a * d_step);
 
-                    if (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz >= L || weight < 1e-4
+                    if (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz >= L || weight < 1e-8
                         break;
                     end
 
@@ -141,27 +132,8 @@ for w_idx = 1:num_W
                     cos_scatter = d1*dir2rx_1 + d2*dir2rx_2 + d3*dir2rx_3;
                     base_w = weight * min(1, pdf_Empirical(cos_scatter, param) * omega) * exp(-param.coef_c * dist2rx);
 
-                    if base_w > 1e-16
-                        [p1_v, p2_v, p3_v, d1_v, d2_v, d3_v, v_hit, ~] = ...
-                            ray_march_flat_scalar(p1, p2, p3, dir2rx_1, dir2rx_2, dir2rx_3, dist2rx+1e-1, ...
-                            Rx, Ry, Rz, 1e10, -1, Nx, Ny, Nz, true, ...
-                            Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-                            Ux, Uy, Uz, Vx, Vy, Vz, k_wave, ...
-                            x_axis(1), dx_s, N_grid_s, ...
-                            Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen);
-
-                        if v_hit
-                            cos_inc_v = abs(d1_v*Nx + d2_v*Ny + d3_v*Nz);
-                            r_eff_v = (Rx_Aperture/2) * sqrt(cos_inc_v);
-                            vec_x = p1_v - Rx; vec_y = p2_v - Ry; vec_z = p3_v - Rz;
-                            cx = vec_y*d3_v - vec_z*d2_v;
-                            cy = vec_z*d1_v - vec_x*d3_v;
-                            cz = vec_x*d2_v - vec_y*d1_v;
-                            r_wp = sqrt(cx^2 + cy^2 + cz^2);
-                            point_loss = double(r_wp <= r_eff_v);
-                            P_packet = P_packet + base_w * point_loss;
-                        end
-                    end
+                    % 无湍流：虚拟光子直线到达Rx (v_hit恒真, r_wp=0, point_loss=1)
+                    P_packet = P_packet + base_w;
 
                     xi = rand(); term = (1 - g_prop^2) / (1 - g_prop + 2 * g_prop * xi);
                     cos_th_i = (1 + g_prop^2 - term^2) / (2 * g_prop);
@@ -191,67 +163,34 @@ save('data_exp10_WCIMC_None.mat', 'dist_cell', 'PL_Cell', 'Time_Cell', 'N_packet
 fprintf('已保存至 data_exp10_WCIMC_None.mat\n');
 
 % ================= 辅助函数 =================
-function [p1, p2, p3, d1, d2, d3, hit_flag, total_len] = ray_march_flat_scalar(...
+function [p1, p2, p3, d1, d2, d3, hit_flag, total_len] = ray_march_flat(...
         p1, p2, p3, d1, d2, d3, dist_limit, Rx, Ry, Rz, ...
-        Rx_Aperture_half_sq, cos_FOV_half, Nx, Ny, Nz, enable_hit_check, ...
-        Grad_X_3D, Grad_Y_3D, Screen_Z_1D, ...
-        Ux, Uy, Uz, Vx, Vy, Vz, k_wave, x0, dx, N_grid, ...
-        Tx, Ty, Tz, Lx, Ly, Lz, delta_z_screen)
-    hit_flag = false; total_len = 0; rem_dist = dist_limit;
-    N_screens = length(Screen_Z_1D);
-    while rem_dist > 1e-9
-        dir_z = d1*Lx + d2*Ly + d3*Lz;
-        z_pos = (p1-Tx)*Lx + (p2-Ty)*Ly + (p3-Tz)*Lz;
-        t_scr = inf; target_idx = -1;
-        if dir_z > 1e-10
-            target_idx = floor((z_pos + 1e-9) / delta_z_screen) + 1;
-            if target_idx < 1, target_idx = 1; end
-            if target_idx <= N_screens
-                t_scr = (Screen_Z_1D(target_idx) - z_pos) / dir_z;
+        Rx_Aperture_half_sq, cos_FOV_half, Nx, Ny, Nz, enable_hit_check)
+    hit_flag = false;
+    if enable_hit_check
+        denom_rx = d1*Nx + d2*Ny + d3*Nz;
+        if abs(denom_rx) > 1e-10
+            t_rx = ((Rx-p1)*Nx + (Ry-p2)*Ny + (Rz-p3)*Nz) / denom_rx;
+            if t_rx > -1e-7
+                t_rx = max(0, t_rx);
+                if t_rx <= dist_limit
+                    p1 = p1 + d1 * t_rx;
+                    p2 = p2 + d2 * t_rx;
+                    p3 = p3 + d3 * t_rx;
+                    total_len = t_rx;
+                    if (p1-Rx)^2 + (p2-Ry)^2 + (p3-Rz)^2 <= Rx_Aperture_half_sq && ...
+                       -(d1*Nx + d2*Ny + d3*Nz) >= cos_FOV_half
+                        hit_flag = true;
+                    end
+                    return;
+                end
             end
-        elseif dir_z < -1e-10
-            target_idx = ceil((z_pos - 1e-9) / delta_z_screen) - 1;
-            if target_idx > N_screens, target_idx = N_screens; end
-            if target_idx >= 1
-                t_scr = (Screen_Z_1D(target_idx) - z_pos) / dir_z;
-            end
-        end
-        t_rx = inf;
-        if enable_hit_check
-            denom_rx = d1*Nx + d2*Ny + d3*Nz;
-            if abs(denom_rx) > 1e-10
-                t_temp = ((Rx-p1)*Nx + (Ry-p2)*Ny + (Rz-p3)*Nz) / denom_rx;
-                if t_temp > -1e-7, t_rx = max(0, t_temp); end
-            end
-        end
-        [min_dist, event_idx] = min([rem_dist, t_rx, t_scr]);
-        p1 = p1 + d1 * min_dist;
-        p2 = p2 + d2 * min_dist;
-        p3 = p3 + d3 * min_dist;
-        rem_dist = rem_dist - min_dist;
-        total_len = total_len + min_dist;
-        if event_idx == 2
-            if (p1-Rx)^2 + (p2-Ry)^2 + (p3-Rz)^2 <= Rx_Aperture_half_sq && ...
-               -(d1*Nx + d2*Ny + d3*Nz) >= cos_FOV_half
-                hit_flag = true;
-            end
-            break;
-        elseif event_idx == 3
-            loc_u = (p1-Tx)*Ux + (p2-Ty)*Uy + (p3-Tz)*Uz;
-            loc_v = (p1-Tx)*Vx + (p2-Ty)*Vy + (p3-Tz)*Vz;
-            idx_x = mod(round((loc_u - x0)/dx), N_grid) + 1;
-            idx_y = mod(round((loc_v - x0)/dx), N_grid) + 1;
-            gx = Grad_X_3D(idx_y, idx_x, target_idx);
-            gy = Grad_Y_3D(idx_y, idx_x, target_idx);
-            d1 = d1 + (gx*Ux + gy*Vx) / k_wave;
-            d2 = d2 + (gx*Uy + gy*Vy) / k_wave;
-            d3 = d3 + (gx*Uz + gy*Vz) / k_wave;
-            d_norm = sqrt(d1^2 + d2^2 + d3^2);
-            d1 = d1/d_norm; d2 = d2/d_norm; d3 = d3/d_norm;
-        elseif event_idx == 1
-            break;
         end
     end
+    p1 = p1 + d1 * dist_limit;
+    p2 = p2 + d2 * dist_limit;
+    p3 = p3 + d3 * dist_limit;
+    total_len = dist_limit;
 end
 
 function param = calc_haltrin_params(p)
