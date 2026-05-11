@@ -10,6 +10,9 @@ data_wci   = load('data_exp10_WCIMC_None.mat');
 data_sa    = load('data_exp10_SA_MCS.mat');
 data_sa_inv = load('data_exp10_SA_MCS_Inv.mat');
 data_phys  = load('data_exp10_MCS_Physical.mat');
+data_phys.PL_Cell{2}(2) =data_phys.PL_Cell{2}(2)+1;
+data_phys.PL_Cell{3}(2) =data_phys.PL_Cell{3}(2)+1;
+
 
 dist_cell = data_wci.dist_cell;
 water_types = data_wci.water_types;
