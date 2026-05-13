@@ -8,9 +8,10 @@ cd(fileparts(mfilename('fullpath')));
 % ================= 物理参数 (与 exp10_1 完全一致) =================
 dist_cell = {[15, 55], [15, 35], [10, 15]};
 water_types = {'Clear Ocean', 'Coastal Ocean', 'Turbid Harbor'};
-coef_a_arr = [0.114, 0.179, 0.366];
-coef_b_arr = [0.0374, 0.219, 1.824];
-coef_c_arr = [0.1514, 0.398, 2.190];
+% 对应 Jerlov 水质：Clear Ocean → IB, Coastal → II, Turbid Harbor → 7C
+coef_a_arr = [0.0512, 0.0512, 0.2224];
+coef_b_arr = [0.0557, 0.3789, 2.4868];
+coef_c_arr = [0.1069, 0.4301, 2.7092];
 num_W = length(water_types);
 
 N_packets_arr = [1e3, 1e4, 1e5];
