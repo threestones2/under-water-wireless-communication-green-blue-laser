@@ -12,8 +12,8 @@ param.n_max = 10;
 lambda_nm = 514; 
 lambda = lambda_nm * 1e-9;
 k_wave = 2*pi/lambda;
-w0 = 0.1;                  % 束腰半径 (m)
-div_angle = 3*pi/180;           % 发散角 (rad)，不采用物理衍射极限theta_div_physics = lambda / (pi * w0) =1.63 *10^(-5)
+w0 = 0.002;                  % 束腰半径 (m)
+div_angle = 0.1*pi/180;           % 发散角 (rad)，不采用物理衍射极限theta_div_physics = lambda / (pi * w0) =1.63 *10^(-5)
 % --- 3D 空间布局 ---
 Tx_Pos = [0, 0, 0];         
 Rx_Pos = [0, 100, 0];       % 传输距离
@@ -40,8 +40,8 @@ Rx_Normal = rotate_direction(-Link_Dir, theta_rx_error, phi_rx_error);
 if abs(mu_T(3)) < 0.9, up_temp_Tx = [0, 0, 1]; else, up_temp_Tx = [1, 0, 0]; end
 u_vec_Tx = cross(up_temp_Tx, mu_T); u_vec_Tx = u_vec_Tx / norm(u_vec_Tx);
 v_vec_Tx = cross(mu_T, u_vec_Tx);   v_vec_Tx = v_vec_Tx / norm(v_vec_Tx);
-Rx_Aperture = 0.2;          % 孔径半径
-Rx_FOV = 10 * pi/180;        
+Rx_Aperture = 0.01;          % 孔径半径
+Rx_FOV = 20 * pi/180;        
 Rx_Area = pi*(Rx_Aperture/2)^2;
 
 % --- 介质参数 (Petzold Clear Ocean) ---
@@ -109,7 +109,7 @@ epsilon = 1e-9;         % 湍流动能耗散率 10^(-9) m^2 s^(-3)
 chi_T = 1e-7;           % 均方温度耗散率 10^(-7) K^2 s^(-1)
 eta = 1e-3;             % 内尺度固定
 N_screens = 20;              
-D_screen = 10;              
+D_screen = 1;              
 N_grid = 2^8;                
 delta_z_screen = Link_Dist / N_screens; 
 
@@ -172,7 +172,7 @@ for s_idx = 1:2
 
     tic;
     for p = 1:N_packets
-        % 光子初始化，后续改成光包，这部分初始化应该删去，但是其实影响不大，这部分初始化方向几乎都是轴向，用的准直高斯光束
+
         r0 = w0 * sqrt(-0.5*log(rand())); phi0 = 2*pi*rand();
         % 使用随 Tx 光轴偏转的局部正交基
         pos_local = r0*cos(phi0)*u_vec_Tx + r0*sin(phi0)*v_vec_Tx;
